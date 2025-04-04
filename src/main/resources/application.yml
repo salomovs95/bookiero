@@ -7,3 +7,7 @@ spring:
     url: ${DATABASE_URL}/bookiero
     username: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
+
+springdoc:
+  swagger-ui:
+    path: /api/docs
