@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: Bookiero
+  profiles:
+    active: ${SPRING_PROFILE:develop}
+  datasource:
+    url: ${DATABASE_URL}/bookiero
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
