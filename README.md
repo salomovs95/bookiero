@@ -95,7 +95,7 @@ mvn clean install
 mvn clean spring-boot:run
 #or
 ./mvnw clean spring-boot:run
-```-->
+```
 
 Open [http://localhost:8080/api/docs](http://localhost:8080/api/docs) in your browser to view the project to test the api.
 Please, check the port.
