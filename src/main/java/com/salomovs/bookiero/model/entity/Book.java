@@ -1,4 +1,4 @@
-package com.salomovs.bookiero.db.entity;
+package com.salomovs.bookiero.model.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -38,4 +38,7 @@ public class Book {
 
   @Column(name="author_name", nullable=false)
   private String authorName;
+
+  @Column(nullable=false)
+  private String editor;
 }

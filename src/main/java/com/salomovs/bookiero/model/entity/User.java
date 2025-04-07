@@ -1,4 +1,4 @@
-package com.salomovs.bookiero.db.entity;
+package com.salomovs.bookiero.model.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

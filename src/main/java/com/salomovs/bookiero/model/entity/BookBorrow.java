@@ -1,4 +1,4 @@
-package com.salomovs.bookiero.db.entity;
+package com.salomovs.bookiero.model.entity;
 
 import java.time.LocalDateTime;
 
