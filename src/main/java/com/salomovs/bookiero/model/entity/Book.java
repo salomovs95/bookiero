@@ -41,4 +41,7 @@ public class Book {
 
   @Column(nullable=false)
   private String editor;
+
+  @Column(name="in_stock_amount", nullable=false)
+  private Integer inStockAmount;
 }
