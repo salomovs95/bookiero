@@ -24,9 +24,21 @@ public class BookController {
       dto.publishYear(),
       dto.category(),
       dto.authorName(),
-      dto.editor()
+      dto.editor(),
+      dto.inStockAmount()
     ));
 
     return newBook.getId();
+  }
+
+  public Book findBookById(Integer bookId) {
+    Book book = this.bookRepo.findById(bookId).orElseThrow(
+      ()->new RuntimeException("Book Not Found [" + bookId + "]")
+    );
+    return book;
+  }
+
+  public Iterable<Book> listBook() {
+    return this.bookRepo.findAll();
   }
 }
