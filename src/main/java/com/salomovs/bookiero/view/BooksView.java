@@ -39,4 +39,11 @@ public class BooksView {
     Book book = this.bookController.findBookById(bookId);
     return ResponseEntity.status(200).body(book);
   }
+
+  @PostMapping("/{book_id}/{user_id}")
+  public ResponseEntity<?> borrowABook(@PathVariable(name="book_id") Integer bookId,
+                                       @PathVariable(name="user_id") Integer userId) {
+    this.bookController.borrowBook(bookId, userId);
+    return ResponseEntity.status(201).body("{\"ok\":\"true\"}");
+  }
 }
