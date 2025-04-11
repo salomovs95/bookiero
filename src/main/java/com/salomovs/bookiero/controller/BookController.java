@@ -55,22 +55,32 @@ public class BookController {
     return this.bookRepo.findAll();
   }
 
-  public void borrowBook(Integer bookId, Integer userId) {
+  public Integer borrowBook(Integer bookId, Integer userId) {
     // TODO: Check user existence
     User user = this.userRepo.findById(userId).orElseThrow(
       ()->new RuntimeException("User Not Found [" + userId + "]")
     );
+
     // TODO: Check book existence
-    Book book = this.bookRepo.findById(userId).orElseThrow(
-      ()->new RuntimeException("Book Not Found [" + bookId + "]")
-    );
+    Book book = this.findBookById(bookId);
+    System.out.println("BOOK EXISTS");
+
     // TODO: Check book availability
-    List<BookBorrow> borrows = this.borrowRepo.findAllByBookId(bookId);
-    if (borrows.stream().filter(borrow->borrow.getReturnedAt() == null).count() >= book.getInStockAmount()) {
-      throw new RuntimeException("Book Not Available To Borrow [" + bookId + "]");
+    List<BookBorrow> borrows = this.borrowRepo.findByBookId(book.getId());
+    System.out.println("HOW MUCH BORROWS: " + borrows.size());
+    if (borrows.size() >= book.getInStockAmount()) {
+      throw new RuntimeException("BOOK NOT AVAILABLE TO BORROW");
     }
-    // TODO: Perform book borro7w
-    BookBorrow borrow = new BookBorrow(null, LocalDateTime.now(), user, book);
-    this.borrowRepo.save(borrow);
+
+    // TODO: Check if ueer has already borrowed this book
+    borrows.stream().forEach(b->{
+      if (b.getWhoBorrows().getId().equals(userId)) {
+        throw new RuntimeException("BOOK " + bookId + " ALREADY BORROWED BY USER " + userId);
+      }
+    });
+
+    // TODO: Perform book borrowing
+    BookBorrow newBorrow = this.borrowRepo.save(new BookBorrow(null, LocalDateTime.now(), user, book));
+    return newBorrow.getId();
   }
 }
