@@ -15,7 +15,7 @@ import lombok.Setter;
 @Getter @Setter @AllArgsConstructor @NoArgsConstructor
 @Entity @Table(name="books")
 public class Book {
-  @Id @GeneratedValue(strategy=GenerationType.SEQUENCE)
+  @Id @GeneratedValue(strategy=GenerationType.IDENTITY)
   private Integer id;
 
   @Column(nullable=false)

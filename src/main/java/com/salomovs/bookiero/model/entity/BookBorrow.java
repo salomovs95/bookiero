@@ -19,7 +19,7 @@ import lombok.Setter;
 @Getter @Setter @AllArgsConstructor @NoArgsConstructor
 @Entity @Table(name="borrows")
 public class BookBorrow {
-  @Id @GeneratedValue(strategy=GenerationType.SEQUENCE)
+  @Id @GeneratedValue(strategy=GenerationType.IDENTITY)
   private Integer id;
 
   @Column(name="borrowed_at", nullable=false)
