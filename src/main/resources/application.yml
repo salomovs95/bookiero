@@ -1,6 +1,8 @@
 spring:
   application:
     name: Bookiero
+  jpa:
+    open-in-view: false
   profiles:
     active: ${SPRING_PROFILE:develop}
   datasource:
