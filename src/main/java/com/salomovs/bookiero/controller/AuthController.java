@@ -27,4 +27,10 @@ public class AuthController {
 
     return newUser.getId();
   }
+
+  public User getUserInfo(Integer userId) {
+    User user = userRepo.findById(userId)
+      .orElseThrow(()->new RuntimeException("User Not Found [" + userId + "]"));
+    return user;
+  }
 }

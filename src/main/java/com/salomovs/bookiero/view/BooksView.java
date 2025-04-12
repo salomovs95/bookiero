@@ -10,16 +10,25 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.salomovs.bookiero.controller.AuthController;
 import com.salomovs.bookiero.controller.BookController;
+import com.salomovs.bookiero.controller.BorrowController;
 import com.salomovs.bookiero.model.entity.Book;
+import com.salomovs.bookiero.model.entity.User;
 import com.salomovs.bookiero.view.dto.CreateBookDto;
 
 @RestController @RequestMapping("/api/books")
 public class BooksView {
+  private AuthController authController;
   private BookController bookController;
+  private BorrowController borrowController;
 
-  public BooksView(final BookController bookController) {
+  public BooksView(final AuthController authController,
+                   final BookController bookController,
+                   final BorrowController borrowController) {
+    this.authController = authController;
     this.bookController = bookController;
+    this.borrowController = borrowController;
   }
 
   @PostMapping("/")
@@ -40,10 +49,13 @@ public class BooksView {
     return ResponseEntity.status(200).body(book);
   }
 
-  @PostMapping("/{book_id}/{user_id}")
+  @PostMapping("/borrow/{book_id}/{user_id}")
   public ResponseEntity<?> borrowABook(@PathVariable(name="book_id") Integer bookId,
                                        @PathVariable(name="user_id") Integer userId) {
-    this.bookController.borrowBook(bookId, userId);
+    User user = authController.getUserInfo(userId);
+    Book book = bookController.findBookById(bookId);
+    
+    this.borrowController.borrowBook(book, user);
     return ResponseEntity.status(201).body("{\"ok\":\"true\"}");
   }
 }
