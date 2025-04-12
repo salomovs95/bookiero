@@ -2,6 +2,7 @@ package com.salomovs.bookiero.controller;
 
 import org.springframework.stereotype.Service;
 
+import com.salomovs.bookiero.exception.UserNotFoundException;
 import com.salomovs.bookiero.model.entity.User;
 import com.salomovs.bookiero.model.repository.UserRepository;
 import com.salomovs.bookiero.view.dto.UserSignUpDto;
@@ -30,7 +31,7 @@ public class AuthController {
 
   public User getUserInfo(Integer userId) {
     User user = userRepo.findById(userId)
-      .orElseThrow(()->new RuntimeException("User Not Found [" + userId + "]"));
+      .orElseThrow(()->new UserNotFoundException(userId));
     return user;
   }
 }
