@@ -18,8 +18,8 @@ public class AuthView {
   }
 
   @PostMapping("/signup")
-  public ResponseEntity<Integer> handleSignUp(@RequestBody UserSignUpDto body) {
+  public ResponseEntity<String> handleSignUp(@RequestBody UserSignUpDto body) {
     int newUserId = this.authController.register(body);
-    return ResponseEntity.status(201).body(newUserId);
+    return ResponseEntity.status(201).body(String.format("{\"ok\": true, \"id\":%d}", newUserId));
   }
 }

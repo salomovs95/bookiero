@@ -15,13 +15,13 @@ public class BookieroExceptionHandler {
     }
 
     return ResponseEntity.status(statusCode).body(
-      String.format("{\"error\": \"%s\"}", ex.getMessage())
+      String.format("{\"ok\": false, \"error\": \"%s\"}", ex.getMessage())
     );
   }
 
   public ResponseEntity<?> handleException(Exception ex) {
     return ResponseEntity.status(500).body(
-      String.format("{\"error\": \"%s\"}", ex.getMessage())
+      String.format("{\"ok\": false, \"error\": \"%s\"}", ex.getMessage())
     );
   }
 }

@@ -32,9 +32,9 @@ public class BooksView {
   }
 
   @PostMapping("/")
-  public ResponseEntity<Integer> createBooks(@RequestBody @Valid CreateBookDto body) {
+  public ResponseEntity<String> createBooks(@RequestBody @Valid CreateBookDto body) {
     Integer newBookId = this.bookController.create(body);
-    return ResponseEntity.status(201).body(newBookId);
+    return ResponseEntity.status(201).body(String.format("{\"id\": %d}", newBookId));
   }
 
   @GetMapping("/")
@@ -50,12 +50,12 @@ public class BooksView {
   }
 
   @PostMapping("/borrow/{book_id}/{user_id}")
-  public ResponseEntity<?> borrowABook(@PathVariable(name="book_id") Integer bookId,
+  public ResponseEntity<String> borrowABook(@PathVariable(name="book_id") Integer bookId,
                                        @PathVariable(name="user_id") Integer userId) {
     User user = authController.getUserInfo(userId);
     Book book = bookController.findBookById(bookId);
     
-    this.borrowController.borrowBook(book, user);
-    return ResponseEntity.status(201).body("{\"ok\":\"true\"}");
+    int newBorrowId = this.borrowController.borrowBook(book, user);
+    return ResponseEntity.status(201).body(String.format("{\"ok\": true, \"id\": %d}", newBorrowId));
   }
 }
