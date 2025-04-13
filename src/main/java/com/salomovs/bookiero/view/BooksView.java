@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -49,13 +50,19 @@ public class BooksView {
     return ResponseEntity.status(200).body(book);
   }
 
-  @PostMapping("/borrow/{book_id}/{user_id}")
+  @PostMapping("/borrows/{book_id}/{user_id}")
   public ResponseEntity<String> borrowABook(@PathVariable(name="book_id") Integer bookId,
                                        @PathVariable(name="user_id") Integer userId) {
-    User user = authController.getUserInfo(userId);
-    Book book = bookController.findBookById(bookId);
+    User user = this.authController.getUserInfo(userId);
+    Book book = this.bookController.findBookById(bookId);
     
     int newBorrowId = this.borrowController.borrowBook(book, user);
     return ResponseEntity.status(201).body(String.format("{\"ok\": true, \"id\": %d}", newBorrowId));
+  }
+
+  @PatchMapping("/borrows/{borrow_id}/return")
+  public ResponseEntity<String> returnBook(@PathVariable(name="borrow_id") Integer borrowId) {
+    this.borrowController.returnBook(borrowId);
+    return ResponseEntity.status(200).body("{\"ok\": true }");
   }
 }

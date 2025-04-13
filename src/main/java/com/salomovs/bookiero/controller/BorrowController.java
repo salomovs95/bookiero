@@ -35,4 +35,11 @@ public class BorrowController {
     BookBorrow newBorrow = this.borrowRepo.save(new BookBorrow(null, LocalDateTime.now(), user, book));
     return newBorrow.getId();
   }
+
+  public void returnBook(Integer borrowId) {
+    BookBorrow borrow = this.borrowRepo.findById(borrowId)
+      .orElseThrow(()->new BookBorrowingException("BORROW NOT FOUND"));
+    borrow.setReturnedAt(LocalDateTime.now());
+    this.borrowRepo.save(borrow);
+  }
 }
