@@ -21,7 +21,6 @@ public class BorrowController {
 
   public Integer borrowBook(Book book, User user) {
     List<BookBorrow> borrows = this.borrowRepo.findByBookId(book.getId());
-    System.out.println("HOW MUCH BORROWS: " + borrows.size());
     if (borrows.size() >= book.getInStockAmount()) {
       throw new BookBorrowingException("BOOK NOT AVAILABLE TO BORROW");
     }
