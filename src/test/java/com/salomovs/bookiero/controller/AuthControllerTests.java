@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
@@ -14,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import com.salomovs.bookiero.model.repository.UserRepository;
 import com.salomovs.bookiero.view.dto.UserSignUpDto;
 
+@Tag("AUTHENTICATION")
 @SpringBootTest @TestInstance(Lifecycle.PER_CLASS)
 public class AuthControllerTests {
   @Autowired
