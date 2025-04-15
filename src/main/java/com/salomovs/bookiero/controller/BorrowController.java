@@ -41,4 +41,9 @@ public class BorrowController {
     borrow.setReturnedAt(LocalDateTime.now());
     this.borrowRepo.save(borrow);
   }
+
+  public Long countActiveBorrows(Integer bookId) {
+    long borrowCount = this.borrowRepo.countActiveBorrows(bookId);
+    return borrowCount;
+  }
 }

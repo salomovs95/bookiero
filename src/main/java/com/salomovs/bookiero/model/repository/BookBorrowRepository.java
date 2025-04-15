@@ -18,4 +18,12 @@ public interface BookBorrowRepository extends CrudRepository<BookBorrow, Integer
           "AND b.returned_at IS NULL"
   )
   List<BookBorrow> findByBookId(@Param("book_id") Integer bookId);
+
+  @Query(
+    nativeQuery=true,
+    value="SELECT COUNT(id) FROM borrows b " +
+          "WHERE b.book_id = :book_id " +
+          "AND b.returned_at IS NULL"
+  )
+  Long countActiveBorrows(@Param("book_id") Integer bookId);
 }

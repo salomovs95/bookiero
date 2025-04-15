@@ -2,6 +2,9 @@ package com.salomovs.bookiero.view;
 
 import jakarta.validation.Valid;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -16,6 +19,7 @@ import com.salomovs.bookiero.controller.BookController;
 import com.salomovs.bookiero.controller.BorrowController;
 import com.salomovs.bookiero.model.entity.Book;
 import com.salomovs.bookiero.model.entity.User;
+import com.salomovs.bookiero.view.dto.BookData;
 import com.salomovs.bookiero.view.dto.CreateBookDto;
 
 @RestController @RequestMapping("/api/books")
@@ -39,15 +43,17 @@ public class BooksView {
   }
 
   @GetMapping("/")
-  public ResponseEntity<Iterable<Book>> listAllBooks() {
-    Iterable<Book> books = this.bookController.listBook();
-    return ResponseEntity.status(200).body(books);
+  public ResponseEntity<List<BookData>> listAllBooks() {
+    List<BookData> responseBody = this.mapDataBatch(this.bookController.listBook());
+    return ResponseEntity.status(200).body(responseBody);
   }
 
   @GetMapping("/{book_id}")
-  public ResponseEntity<Book> findSpecificBook(@PathVariable(name="book_id") Integer bookId) {
+  public ResponseEntity<BookData> findSpecificBook(@PathVariable(name="book_id") Integer bookId) {
     Book book = this.bookController.findBookById(bookId);
-    return ResponseEntity.status(200).body(book);
+    Long activeBorrows = this.borrowController.countActiveBorrows(book.getId());
+    
+    return ResponseEntity.status(200).body(this.mapData(book, activeBorrows));
   }
 
   @PostMapping("/borrows/{book_id}/{user_id}")
@@ -64,5 +70,31 @@ public class BooksView {
   public ResponseEntity<String> returnBook(@PathVariable(name="borrow_id") Integer borrowId) {
     this.borrowController.returnBook(borrowId);
     return ResponseEntity.status(200).body("{\"ok\": true }");
+  }
+
+  private List<BookData> mapDataBatch(Iterable<Book> books) {
+    List<BookData> bDL = new ArrayList<>();
+    books.forEach((book) -> {
+      BookData data = this.mapData(book, this.borrowController.countActiveBorrows(book.getId()));
+      bDL.add(data);
+    });
+    return bDL;
+  }
+
+  private BookData mapData(Book book, Long activeBorrows) {
+    BookData bookData = new BookData(
+      book.getId(),
+      book.getTitle(),
+      book.getEsbn(),
+      book.getEdition(),
+      book.getCategory(),
+      book.getAuthorName(),
+      book.getEditor(),
+      book.getPageCount(),
+      book.getPublishYear(),
+      book.getInStockAmount(),
+      activeBorrows
+    );
+    return bookData;
   }
 }
