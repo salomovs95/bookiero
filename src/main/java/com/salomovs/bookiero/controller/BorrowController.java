@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.salomovs.bookiero.exception.BookBorrowingException;
+import com.salomovs.bookiero.exception.BorrowNotFoundException;
 import com.salomovs.bookiero.model.entity.Book;
 import com.salomovs.bookiero.model.entity.BookBorrow;
 import com.salomovs.bookiero.model.entity.User;
@@ -37,7 +38,7 @@ public class BorrowController {
 
   public void returnBook(Integer borrowId) {
     BookBorrow borrow = this.borrowRepo.findById(borrowId)
-      .orElseThrow(()->new BookBorrowingException("BORROW NOT FOUND"));
+      .orElseThrow(()->new BorrowNotFoundException("BORROW NOT FOUND"));
     borrow.setReturnedAt(LocalDateTime.now());
     this.borrowRepo.save(borrow);
   }

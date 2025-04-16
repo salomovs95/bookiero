@@ -21,7 +21,16 @@ import com.salomovs.bookiero.model.entity.Book;
 import com.salomovs.bookiero.model.entity.User;
 import com.salomovs.bookiero.view.dto.BookData;
 import com.salomovs.bookiero.view.dto.CreateBookDto;
+import com.salomovs.bookiero.view.dto.HttpResponse;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name="Books View", description="Handles operations on books and borrowing")
 @RestController @RequestMapping("/api/books")
 public class BooksView {
   private AuthController authController;
@@ -36,19 +45,55 @@ public class BooksView {
     this.borrowController = borrowController;
   }
 
-  @PostMapping("/")
-  public ResponseEntity<String> createBooks(@RequestBody @Valid CreateBookDto body) {
+  @Operation(summary="Book Creation Handler") @PostMapping("/")
+  @ApiResponses(
+    @ApiResponse(
+      responseCode="201",
+      content=@Content(
+        mediaType="application/json",
+        schema=@Schema(
+          implementation=HttpResponse.class,
+          example="{\"ok\": true, \"id\": 0}"
+        )
+      )
+    )
+  )
+  public ResponseEntity<HttpResponse> createBooks(@RequestBody @Valid CreateBookDto body) {
     Integer newBookId = this.bookController.create(body);
-    return ResponseEntity.status(201).body(String.format("{\"id\": %d}", newBookId));
+    return ResponseEntity.status(201).body(new HttpResponse(true, newBookId));
   }
 
-  @GetMapping("/")
+  @Operation(summary="Book Listing Handler") @GetMapping("/")
+  @ApiResponses(
+    @ApiResponse(
+      responseCode="200",
+      content=@Content(
+        mediaType="application/json",
+        schema=@Schema(
+          implementation=List.class,
+          example="[]"
+        )
+      )
+    )
+  )
   public ResponseEntity<List<BookData>> listAllBooks() {
     List<BookData> responseBody = this.mapDataBatch(this.bookController.listBook());
     return ResponseEntity.status(200).body(responseBody);
   }
 
-  @GetMapping("/{book_id}")
+  @Operation(summary="Book Specific Info Handler") @GetMapping("/{book_id}")
+  @ApiResponses({
+    @ApiResponse(
+      responseCode="200",
+      content=@Content(
+        mediaType="application/json",
+        schema=@Schema(
+          implementation=BookData.class,
+          example="{\"id\": 0, \"title\":\"the millenium bug\", \"authorName\":\"salomovs\", \"category\":\"sci-fi\", \"esbn\":\"esbn-number-here\", \"edition\":\"1st\", \"editor\":\"any\", \"pageCount\":9999, \"publishYear\": 2025, \"inStockAmount\":999, \"borrowCount\": 0}"
+        )
+      )
+    )
+  })
   public ResponseEntity<BookData> findSpecificBook(@PathVariable(name="book_id") Integer bookId) {
     Book book = this.bookController.findBookById(bookId);
     Long activeBorrows = this.borrowController.countActiveBorrows(book.getId());
@@ -56,20 +101,38 @@ public class BooksView {
     return ResponseEntity.status(200).body(this.mapData(book, activeBorrows));
   }
 
-  @PostMapping("/borrows/{book_id}/{user_id}")
-  public ResponseEntity<String> borrowABook(@PathVariable(name="book_id") Integer bookId,
-                                       @PathVariable(name="user_id") Integer userId) {
+  @Operation(summary="Book Borrowing Handler") @PostMapping("/borrows/{book_id}/{user_id}")
+  @ApiResponses({
+    @ApiResponse(
+      responseCode="201",
+      content=@Content(
+        mediaType="application/json",
+        schema=@Schema(
+          implementation=HttpResponse.class,
+          example="{\"ok\": true, \"id\": 0}"
+        )
+      )
+    )
+  })
+  public ResponseEntity<HttpResponse> borrowABook(@PathVariable(name="book_id") Integer bookId,
+                                                  @PathVariable(name="user_id") Integer userId) {
     User user = this.authController.getUserInfo(userId);
     Book book = this.bookController.findBookById(bookId);
     
     int newBorrowId = this.borrowController.borrowBook(book, user);
-    return ResponseEntity.status(201).body(String.format("{\"ok\": true, \"id\": %d}", newBorrowId));
+    return ResponseEntity.status(201).body(new HttpResponse(true , newBorrowId));
   }
 
-  @PatchMapping("/borrows/{borrow_id}/return")
+  @Operation(summary="Book Return Handler") @PatchMapping("/borrows/{borrow_id}/return")
+  @ApiResponses({
+    @ApiResponse(
+      responseCode="200",
+      content=@Content
+    )
+  })
   public ResponseEntity<String> returnBook(@PathVariable(name="borrow_id") Integer borrowId) {
     this.borrowController.returnBook(borrowId);
-    return ResponseEntity.status(200).body("{\"ok\": true }");
+    return ResponseEntity.status(200).build();
   }
 
   private List<BookData> mapDataBatch(Iterable<Book> books) {
