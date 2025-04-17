@@ -2,8 +2,10 @@ package com.salomovs.bookiero.view;
 
 import jakarta.validation.Valid;
 
-import java.util.ArrayList;
+import lombok.RequiredArgsConstructor;
+
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.salomovs.bookiero.controller.AuthController;
 import com.salomovs.bookiero.controller.BookController;
 import com.salomovs.bookiero.controller.BorrowController;
+import com.salomovs.bookiero.mapper.BookMapper;
 import com.salomovs.bookiero.model.entity.Book;
 import com.salomovs.bookiero.model.entity.User;
 import com.salomovs.bookiero.view.dto.BookData;
@@ -30,20 +33,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+@RequiredArgsConstructor
 @Tag(name="Books View", description="Handles operations on books and borrowing")
 @RestController @RequestMapping("/api/books")
 public class BooksView {
   private AuthController authController;
   private BookController bookController;
   private BorrowController borrowController;
-
-  public BooksView(final AuthController authController,
-                   final BookController bookController,
-                   final BorrowController borrowController) {
-    this.authController = authController;
-    this.bookController = bookController;
-    this.borrowController = borrowController;
-  }
 
   @Operation(summary="Book Creation Handler") @PostMapping("/")
   @ApiResponses(
@@ -77,7 +73,14 @@ public class BooksView {
     )
   )
   public ResponseEntity<List<BookData>> listAllBooks() {
-    List<BookData> responseBody = this.mapDataBatch(this.bookController.listBook());
+    List<BookData> responseBody = this.bookController
+      .listBook()
+      .stream()
+      .map(b->BookMapper.mapBookToData(
+         b,
+         this.borrowController.countActiveBorrows(b.getId())
+      ))
+      .collect(Collectors.toList());
     return ResponseEntity.status(200).body(responseBody);
   }
 
@@ -98,7 +101,7 @@ public class BooksView {
     Book book = this.bookController.findBookById(bookId);
     Long activeBorrows = this.borrowController.countActiveBorrows(book.getId());
     
-    return ResponseEntity.status(200).body(this.mapData(book, activeBorrows));
+    return ResponseEntity.status(200).body(BookMapper.mapBookToData(book, activeBorrows));
   }
 
   @Operation(summary="Book Borrowing Handler") @PostMapping("/borrows/{book_id}/{user_id}")
@@ -133,31 +136,5 @@ public class BooksView {
   public ResponseEntity<String> returnBook(@PathVariable(name="borrow_id") Integer borrowId) {
     this.borrowController.returnBook(borrowId);
     return ResponseEntity.status(200).build();
-  }
-
-  private List<BookData> mapDataBatch(Iterable<Book> books) {
-    List<BookData> bDL = new ArrayList<>();
-    books.forEach((book) -> {
-      BookData data = this.mapData(book, this.borrowController.countActiveBorrows(book.getId()));
-      bDL.add(data);
-    });
-    return bDL;
-  }
-
-  private BookData mapData(Book book, Long activeBorrows) {
-    BookData bookData = new BookData(
-      book.getId(),
-      book.getTitle(),
-      book.getEsbn(),
-      book.getEdition(),
-      book.getCategory(),
-      book.getAuthorName(),
-      book.getEditor(),
-      book.getPageCount(),
-      book.getPublishYear(),
-      book.getInStockAmount(),
-      activeBorrows
-    );
-    return bookData;
   }
 }

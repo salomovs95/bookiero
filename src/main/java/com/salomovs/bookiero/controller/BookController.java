@@ -1,5 +1,7 @@
 package com.salomovs.bookiero.controller;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.salomovs.bookiero.exception.BookNotFoundException;
@@ -39,7 +41,7 @@ public class BookController {
     return book;
   }
 
-  public Iterable<Book> listBook() {
+  public List<Book> listBook() {
     return this.bookRepo.findAll();
   }
 }

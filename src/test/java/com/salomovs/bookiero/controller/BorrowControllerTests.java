@@ -18,6 +18,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.Sql.ExecutionPhase;
 
 import com.salomovs.bookiero.exception.BookBorrowingException;
+import com.salomovs.bookiero.exception.BorrowNotFoundException;
 import com.salomovs.bookiero.model.entity.Book;
 import com.salomovs.bookiero.model.entity.User;
 import com.salomovs.bookiero.model.repository.BookBorrowRepository;
@@ -100,7 +101,7 @@ public class BorrowControllerTests {
   @Test @Order(5)
   public void ReturnBorrowedBookFail() {
     Integer borrowId = 999;
-    BookBorrowingException e = assertThrows(BookBorrowingException.class, ()->bbController.returnBook(borrowId));
+    BorrowNotFoundException e = assertThrows(BorrowNotFoundException.class, ()->bbController.returnBook(borrowId));
     assertEquals("BORROW NOT FOUND", e.getMessage());
   }
 }
