@@ -1,6 +1,9 @@
 spring:
   application:
     name: Bookiero
+  api:
+    cors:
+      allowed-origins: ${ALLOWED_ORIGINS}
   jpa:
     open-in-view: false
   profiles:
@@ -9,7 +12,9 @@ spring:
     url: ${DATABASE_URL}/bookiero
     username: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
-
-springdoc:
-  swagger-ui:
-    path: /api/docs
+  security:
+    secret-random: ${ENCODER_SECRET}
+    oauth2:
+      resourceserver:
+        jwt:
+          public-key-location: ${JWT_PUB_KEY_LOCATION}

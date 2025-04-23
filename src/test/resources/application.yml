@@ -1,8 +1,14 @@
 spring:
   profiles:
-    active: test
+    active: unittest
   jpa:
     hibernate:
       ddl-auto: create-drop
   datasource:
     url: jdbc:h2:mem:bookiero
+  security:
+    secret-random: ${ENCODER_SECRET}
+    oauth2:
+      resourceserver:
+        jwt:
+          public-key-location: ${JWT_PUB_KEY_LOCATION}
