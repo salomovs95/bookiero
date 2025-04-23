@@ -1,5 +1,12 @@
 package com.salomovs.bookiero.model.entity;
 
+import java.util.Collection;
+import java.util.List;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
@@ -16,12 +23,15 @@ import lombok.Setter;
 
 @Getter @Setter @AllArgsConstructor @NoArgsConstructor
 @Entity @Table(name="users")
-public class User {
+public class User implements UserDetails {
   @Id @GeneratedValue(strategy=GenerationType.IDENTITY)
   private Integer id;
 
   @Column(name="full_name", nullable=false)
   private String fullName;
+
+  @Column(nullable=false)
+  private String username;
 
   @Column(name="tax_id", nullable=false)
   private String taxId;
@@ -37,4 +47,14 @@ public class User {
 
   @Column(nullable=false)
   private String address;
+
+  @Column(nullable=true)
+  private String role;
+
+  @Override
+  public Collection<? extends GrantedAuthority> getAuthorities() {
+    return List.of( new SimpleGrantedAuthority(
+        this.getRole() == null ? "USERS.COMMON" : this.getRole()
+    ) );
+  }
 }
