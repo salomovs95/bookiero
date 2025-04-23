@@ -42,7 +42,7 @@ public class BorrowControllerTests {
 
   @BeforeAll
   private void setup() {
-    aController = new AuthController(userRepo);
+    aController = new AuthController(userRepo, null);
     bController = new BookController(bookRepo);
     bbController = new BorrowController(borrowRepo);
   }

@@ -6,8 +6,11 @@ spring:
       ddl-auto: create-drop
   datasource:
     url: jdbc:h2:mem:bookiero
+  api:
+    cors:
+      allowed-origins: "*"
   security:
-    secret-random: ${ENCODER_SECRET}
+    secret-random: ENCODER_SUPER_SECRET
     oauth2:
       resourceserver:
         jwt:
