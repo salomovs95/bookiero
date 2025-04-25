@@ -6,48 +6,48 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.salomovs.bookiero.view.dto.HttpErrorResponse;
+import com.salomovs.bookiero.view.dto.HttpResponse;
 
 @RestControllerAdvice
 public class BookieroExceptionHandler {
   @ExceptionHandler(BookNotFoundException.class) @ResponseStatus(HttpStatus.NOT_FOUND)
-  public ResponseEntity<HttpErrorResponse> handleException(BookNotFoundException ex) {
+  public ResponseEntity<HttpResponse> handleException(BookNotFoundException ex) {
     return ResponseEntity.status(404).body(
-      new HttpErrorResponse(false, ex.getMessage())
+      new HttpResponse(false, ex.getMessage())
     );
   }
 
   @ExceptionHandler(UserNotFoundException.class) @ResponseStatus(HttpStatus.NOT_FOUND)
-  public ResponseEntity<HttpErrorResponse> handleException(UserNotFoundException ex) {
+  public ResponseEntity<HttpResponse> handleException(UserNotFoundException ex) {
     return ResponseEntity.status(404).body(
-      new HttpErrorResponse(false, ex.getMessage())
+      new HttpResponse(false, ex.getMessage())
     );
   }
 
   @ExceptionHandler(BorrowNotFoundException.class) @ResponseStatus(HttpStatus.NOT_FOUND)
-  public ResponseEntity<HttpErrorResponse> handleException(BorrowNotFoundException ex) {
+  public ResponseEntity<HttpResponse> handleException(BorrowNotFoundException ex) {
     return ResponseEntity.status(404).body(
-      new HttpErrorResponse(false, ex.getMessage())
+      new HttpResponse(false, ex.getMessage())
     );
   }
 
   @ExceptionHandler(BookBorrowingException.class) @ResponseStatus(HttpStatus.BAD_REQUEST)
-  public ResponseEntity<HttpErrorResponse> handleException(BookBorrowingException ex) {
+  public ResponseEntity<HttpResponse> handleException(BookBorrowingException ex) {
     return ResponseEntity.status(400).body(
-      new HttpErrorResponse(false, ex.getMessage())
+      new HttpResponse(false, ex.getMessage())
     );
   }
 
   @ExceptionHandler(RuntimeException.class) @ResponseStatus(HttpStatus.BAD_REQUEST)
-  public ResponseEntity<HttpErrorResponse> handleException(RuntimeException ex) {
+  public ResponseEntity<HttpResponse> handleException(RuntimeException ex) {
     return ResponseEntity.status(400).body(
-      new HttpErrorResponse(false, ex.getMessage())
+      new HttpResponse(false, ex.getMessage())
     );
   }
 
 
   @ExceptionHandler @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-  public ResponseEntity<HttpErrorResponse> handleException(Exception ex) {
-    return ResponseEntity.status(500).body(new HttpErrorResponse(false, ex.getMessage()));
+  public ResponseEntity<HttpResponse> handleException(Exception ex) {
+    return ResponseEntity.status(500).body(new HttpResponse(false, ex.getMessage()));
   }
 }

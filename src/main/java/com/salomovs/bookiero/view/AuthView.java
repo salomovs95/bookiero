@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.salomovs.bookiero.controller.AuthController;
 import com.salomovs.bookiero.model.entity.User;
 import com.salomovs.bookiero.view.dto.HttpResponse;
-import com.salomovs.bookiero.view.dto.LoginResponse;
 import com.salomovs.bookiero.view.dto.UserLoginDto;
 import com.salomovs.bookiero.view.dto.UserSignUpDto;
 
@@ -58,6 +57,18 @@ public class AuthView {
           schema=@Schema(implementation=HttpResponse.class)
         )
       }
+    ),
+    @ApiResponse(
+      responseCode="400",
+      content={
+        @Content(
+          mediaType="application/json",
+          schema=@Schema(
+            implementation=HttpResponse.class,
+            example="{\"ok\": false, \"payload\": \"bad request\" }"
+          )
+        )
+      }
     )
   })
   @PostMapping("/signup")
@@ -70,8 +81,46 @@ public class AuthView {
     summary="User Authentication Handler",
     security={@SecurityRequirement(name="")}
   )
+  @ApiResponses({
+    @ApiResponse(
+      responseCode="200",
+      content={
+        @Content(
+          mediaType="application/json",
+          schema=@Schema(
+            implementation=HttpResponse.class,
+            example="{ \"ok\": true, \"payload\": \"tkVmDYfqVlSi1oyLf9QF-0AMd4v\" }"
+          )
+        )
+      }
+    ),
+    @ApiResponse(
+      responseCode="400",
+      content={
+        @Content(
+          mediaType="application/json",
+          schema=@Schema(
+            implementation=HttpResponse.class,
+            example="{ \"ok\": false, \"payload\": \"invalid credentials\" }"
+          )
+        )
+      }
+    ),
+    @ApiResponse(
+      responseCode="404",
+      content={
+        @Content(
+          mediaType="application/json",
+          schema=@Schema(
+            implementation = HttpResponse.class,
+            example="{ \"ok\": false, \"payload\": \"user not found\" }"
+          )
+        )
+      }
+    )
+  })
   @PostMapping("/login")
-  public ResponseEntity<LoginResponse> handleLogin(@RequestBody UserLoginDto body) {
+  public ResponseEntity<HttpResponse> handleLogin(@RequestBody UserLoginDto body) {
     Authentication authentication = this.authManager.authenticate(
       UsernamePasswordAuthenticationToken.unauthenticated(body.credential(), body.password())
     );
@@ -90,7 +139,6 @@ public class AuthView {
       )
     ).getTokenValue();
 
-    LoginResponse response = new LoginResponse(userDetails, jwtToken);
-    return ResponseEntity.status(200).body(response);
+    return ResponseEntity.status(200).body(new HttpResponse(true, jwtToken));
   }
 }

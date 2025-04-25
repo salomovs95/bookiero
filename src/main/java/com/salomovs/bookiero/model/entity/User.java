@@ -7,7 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,8 +21,21 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter @Setter @AllArgsConstructor @NoArgsConstructor
-@Entity @Table(name="users")
+@JsonIgnoreProperties(value={
+  "password",
+  "role",
+  "authorities",
+  "enabled",
+  "accountNonExpired",
+  "accountNonLocked",
+  "credentialsNonExpired"
+})
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@Table(name="users")
 public class User implements UserDetails {
   @Id @GeneratedValue(strategy=GenerationType.IDENTITY)
   private Integer id;
@@ -30,19 +43,19 @@ public class User implements UserDetails {
   @Column(name="full_name", nullable=false)
   private String fullName;
 
-  @Column(nullable=false)
+  @Column(nullable=false, unique=true)
   private String username;
 
-  @Column(name="tax_id", nullable=false)
+  @Column(name="tax_id", nullable=false, unique=true)
   private String taxId;
 
-  @Column(nullable=false) @JsonIgnore
+  @Column(nullable=false)
   private String password;
 
-  @Column(nullable=false)
+  @Column(nullable=false, unique=true)
   private String email;
   
-  @Column(nullable=false)
+  @Column(nullable=false, unique=true)
   private String phone;
 
   @Column(nullable=false)

@@ -2,8 +2,6 @@ package com.salomovs.bookiero.view;
 
 import jakarta.validation.Valid;
 
-import lombok.RequiredArgsConstructor;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,29 +52,49 @@ public class BooksView {
     summary="Book Creation Handler",
     security={@SecurityRequirement(name="jwt")}
   )
-  @ApiResponses(
+  @ApiResponses({
     @ApiResponse(
       responseCode="201",
       content=@Content(
         mediaType="application/json",
         schema=@Schema(
           implementation=HttpResponse.class,
-          example="{\"ok\": true, \"id\": 0}"
+          example="{ \"ok\": true, \"payload\": { \"id\": 0 } }"
+        )
+      )
+    ),
+    @ApiResponse(
+      responseCode="400",
+      content=@Content(
+        mediaType="application/json",
+        schema=@Schema(
+          implementation=HttpResponse.class,
+          example="{ \"ok\": false, \"payload\": \"bad request\" }"
+        )
+      )
+    ),
+    @ApiResponse(
+      responseCode="401",
+      content=@Content(
+        mediaType="application/json",
+        schema=@Schema(
+          implementation=HttpResponse.class,
+          example="{ \"ok\": false, \"payload\": \"not authorized\" }"
         )
       )
     )
-  )
+  })
   @PostMapping("/") @PreAuthorize("hasRole('USERS.ADMIN')")
-  public ResponseEntity<HttpResponse> createBooks(@RequestBody @Valid CreateBookDto body) {
-    Integer newBookId = this.bookController.create(body);
-    return ResponseEntity.status(201).body(new HttpResponse(true, newBookId));
+  public ResponseEntity<HttpResponse> registerBook(@RequestBody @Valid CreateBookDto body) {
+    Integer bookId = this.bookController.create(body);
+    return ResponseEntity.status(201).body(new HttpResponse(true, String.format("{ \"id\": %d }", bookId)));
   }
 
   @Operation(
     summary="Book Listing Handler",
     security={@SecurityRequirement(name="jwt")}
   )
-  @ApiResponses(
+  @ApiResponses({
     @ApiResponse(
       responseCode="200",
       content=@Content(
@@ -86,8 +104,18 @@ public class BooksView {
           example="[]"
         )
       )
+    ),
+    @ApiResponse(
+      responseCode="401",
+      content=@Content(
+        mediaType="application/json",
+        schema=@Schema(
+          implementation=HttpResponse.class,
+          example="{ \"ok\": false, \"payload\": \"not authorized\" }"
+        )
+      )
     )
-  )
+  })
   @GetMapping("/")
   public ResponseEntity<List<BookData>> listAllBooks() {
     List<BookData> responseBody = this.bookController
@@ -112,17 +140,37 @@ public class BooksView {
         mediaType="application/json",
         schema=@Schema(
           implementation=BookData.class,
-          example="{\"id\": 0, \"title\":\"the millenium bug\", \"authorName\":\"salomovs\", \"category\":\"sci-fi\", \"esbn\":\"esbn-number-here\", \"edition\":\"1st\", \"editor\":\"any\", \"pageCount\":9999, \"publishYear\": 2025, \"inStockAmount\":999, \"borrowCount\": 0}"
+          example="{ \"ok\": true, \"payload\": {\"id\": 0, \"title\":\"the millenium bug\", \"authorName\":\"salomovs\", \"category\":\"sci-fi\", \"esbn\":\"esbn-number-here\", \"edition\":\"1st\", \"editor\":\"any\", \"pageCount\":9999, \"publishYear\": 2025, \"inStockAmount\":999, \"borrowCount\": 0} }"
+        )
+      )
+    ),
+    @ApiResponse(
+      responseCode="404",
+      content=@Content(
+        mediaType="application/json",
+        schema=@Schema(
+          implementation = HttpResponse.class,
+          example="{ \"ok\": false, \"payload\": \"entity not found\" }"
+        )
+      )
+    ),
+    @ApiResponse(
+      responseCode="401",
+      content=@Content(
+        mediaType="application/json",
+        schema=@Schema(
+           implementation=HttpResponse.class,
+           example="{ \"ok\": false, \"payload\": \"not authorized\" }"
         )
       )
     )
   })
   @GetMapping("/{book_id}")
-  public ResponseEntity<BookData> findSpecificBook(@PathVariable(name="book_id") Integer bookId) {
+  public ResponseEntity<HttpResponse> findSpecificBook(@PathVariable(name="book_id") Integer bookId) {
     Book book = this.bookController.findBookById(bookId);
     Long activeBorrows = this.borrowController.countActiveBorrows(book.getId());
     
-    return ResponseEntity.status(200).body(BookMapper.mapBookToData(book, activeBorrows));
+    return ResponseEntity.status(200).body(new HttpResponse(true, BookMapper.mapBookToData(book, activeBorrows)));
   }
 
   @Operation(
@@ -136,7 +184,37 @@ public class BooksView {
         mediaType="application/json",
         schema=@Schema(
           implementation=HttpResponse.class,
-          example="{\"ok\": true, \"id\": 0}"
+          example="{ \"ok\": true, \"payload\": { \"id\": 0 } }"
+        )
+      )
+    ),
+    @ApiResponse(
+      responseCode="400",
+      content=@Content(
+        mediaType="application/json",
+        schema=@Schema(
+          implementation = HttpResponse.class,
+          example="{ \"ok\": false, \"payload\": \"bad request\" }"
+        )
+      )
+    ),
+    @ApiResponse(
+      responseCode="404",
+      content=@Content(
+        mediaType="application/json",
+        schema=@Schema(
+          implementation = HttpResponse.class,
+          example="{ \"ok\": false, \"payload\": \"entity not found\" }"
+        )
+      )
+    ),
+    @ApiResponse(
+      responseCode="401",
+      content=@Content(
+        mediaType="application/json",
+        schema=@Schema(
+          implementation=HttpResponse.class,
+          example="{ \"ok\": false, \"payload\": \"not authorized\" }"
         )
       )
     )
@@ -158,12 +236,48 @@ public class BooksView {
   @ApiResponses({
     @ApiResponse(
       responseCode="200",
-      content=@Content
+      content=@Content(
+        mediaType="application/json",
+        schema=@Schema(
+          implementation = HttpResponse.class,
+          example="{ \"ok\": true, \"payload\": null }"
+        )
+      )
+    ),
+    @ApiResponse(
+      responseCode="400",
+      content=@Content(
+        mediaType="application/json",
+        schema=@Schema(
+          implementation = HttpResponse.class,
+          example="{ \"ok\": false, \"payload\": \"bad request\" }"
+        )
+      )
+    ),
+    @ApiResponse(
+      responseCode="404",
+      content=@Content(
+        mediaType="application/json",
+        schema=@Schema(
+          implementation = HttpResponse.class,
+          example="{ \"ok\": false, \"payload\": \"entity not found\" }"
+        )
+      )
+    ),
+    @ApiResponse(
+      responseCode="401",
+      content=@Content(
+        mediaType="application/json",
+        schema=@Schema(
+          implementation=HttpResponse.class,
+          example="{ \"ok\": false, \"payload\": \"not authorized\" }"
+        )
+      )
     )
   })
   @PatchMapping("/borrows/{borrow_id}/return")
-  public ResponseEntity<?> returnBook(@PathVariable(name="borrow_id") Integer borrowId) {
+  public ResponseEntity<HttpResponse> returnBook(@PathVariable(name="borrow_id") Integer borrowId) {
     this.borrowController.returnBook(borrowId);
-    return ResponseEntity.status(200).build();
+    return ResponseEntity.status(200).body(new HttpResponse(true, null));
   }
 }
