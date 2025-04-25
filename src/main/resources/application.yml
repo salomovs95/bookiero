@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: Bookiero
+  api:
+    cors:
+      allowed-origins: ${ALLOWED_ORIGINS}
+  jpa:
+    open-in-view: false
+  profiles:
+    active: ${SPRING_PROFILE:develop}
+  datasource:
+    url: ${DATABASE_URL}/bookiero
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+  security:
+    secret-random: ${ENCODER_SECRET}
+    oauth2:
+      resourceserver:
+        jwt:
+          public-key-location: ${JWT_PUB_KEY_LOCATION}
+          private-key-location: ${JWT_PRIV_KEY_LOCATION}
