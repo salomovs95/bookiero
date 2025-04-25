@@ -32,9 +32,9 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-@RequiredArgsConstructor
 @Tag(name="Books View", description="Handles operations on books and borrowing")
 @RestController @RequestMapping("/api/books")
 public class BooksView {
@@ -42,7 +42,18 @@ public class BooksView {
   private BookController bookController;
   private BorrowController borrowController;
 
-  @Operation(summary="Book Creation Handler") @PostMapping("/") @PreAuthorize("hasRole('USERS.ADMIN')")
+  public BooksView(final AuthController authController,
+                   final BookController bookController,
+                   final BorrowController borrowController) {
+    this.authController = authController;
+    this.bookController = bookController;
+    this.borrowController = borrowController;
+  }
+
+  @Operation(
+    summary="Book Creation Handler",
+    security={@SecurityRequirement(name="jwt")}
+  )
   @ApiResponses(
     @ApiResponse(
       responseCode="201",
@@ -55,12 +66,16 @@ public class BooksView {
       )
     )
   )
+  @PostMapping("/") @PreAuthorize("hasRole('USERS.ADMIN')")
   public ResponseEntity<HttpResponse> createBooks(@RequestBody @Valid CreateBookDto body) {
     Integer newBookId = this.bookController.create(body);
     return ResponseEntity.status(201).body(new HttpResponse(true, newBookId));
   }
 
-  @Operation(summary="Book Listing Handler") @GetMapping("/")
+  @Operation(
+    summary="Book Listing Handler",
+    security={@SecurityRequirement(name="jwt")}
+  )
   @ApiResponses(
     @ApiResponse(
       responseCode="200",
@@ -73,6 +88,7 @@ public class BooksView {
       )
     )
   )
+  @GetMapping("/")
   public ResponseEntity<List<BookData>> listAllBooks() {
     List<BookData> responseBody = this.bookController
       .listBook()
@@ -85,7 +101,10 @@ public class BooksView {
     return ResponseEntity.status(200).body(responseBody);
   }
 
-  @Operation(summary="Book Specific Info Handler") @GetMapping("/{book_id}")
+  @Operation(
+    summary="Book Specific Info Handler",
+    security={@SecurityRequirement(name="jwt")}
+  )
   @ApiResponses({
     @ApiResponse(
       responseCode="200",
@@ -98,6 +117,7 @@ public class BooksView {
       )
     )
   })
+  @GetMapping("/{book_id}")
   public ResponseEntity<BookData> findSpecificBook(@PathVariable(name="book_id") Integer bookId) {
     Book book = this.bookController.findBookById(bookId);
     Long activeBorrows = this.borrowController.countActiveBorrows(book.getId());
@@ -105,7 +125,10 @@ public class BooksView {
     return ResponseEntity.status(200).body(BookMapper.mapBookToData(book, activeBorrows));
   }
 
-  @Operation(summary="Book Borrowing Handler") @PostMapping("/borrows/{book_id}/{user_id}")
+  @Operation(
+    summary="Book Borrowing Handler",
+    security={@SecurityRequirement(name="jwt")}
+  )
   @ApiResponses({
     @ApiResponse(
       responseCode="201",
@@ -118,6 +141,7 @@ public class BooksView {
       )
     )
   })
+  @PostMapping("/borrows/{book_id}/{user_id}")
   public ResponseEntity<HttpResponse> borrowABook(@PathVariable(name="book_id") Integer bookId,
                                                   @PathVariable(name="user_id") Integer userId) {
     User user = this.authController.getUserInfo(userId);
@@ -127,14 +151,18 @@ public class BooksView {
     return ResponseEntity.status(201).body(new HttpResponse(true , newBorrowId));
   }
 
-  @Operation(summary="Book Return Handler") @PatchMapping("/borrows/{borrow_id}/return")
+  @Operation(
+    summary="Book Return Handler",
+    security={@SecurityRequirement(name="jwt")}
+  )
   @ApiResponses({
     @ApiResponse(
       responseCode="200",
       content=@Content
     )
   })
-  public ResponseEntity<String> returnBook(@PathVariable(name="borrow_id") Integer borrowId) {
+  @PatchMapping("/borrows/{borrow_id}/return")
+  public ResponseEntity<?> returnBook(@PathVariable(name="borrow_id") Integer borrowId) {
     this.borrowController.returnBook(borrowId);
     return ResponseEntity.status(200).build();
   }
