@@ -97,7 +97,7 @@ mvn clean spring-boot:run
 ./mvnw clean spring-boot:run
 ```
 
-Open [http://localhost:8080/api/docs](http://localhost:8080/api/docs) in your browser to view the project to test the api.
+Open [localhost:8080/swagger-ui/index.html](localhost:8080/swagger-ui/index.html) in your browser to view the project to test the api.
 Please, check the port.
 
 ## <a name="envs">💾 Environment Variables</a>
@@ -106,9 +106,22 @@ Please, check the port.
 <summary><code>Make sure these variables are available before start the application</code></summary>
 
 ```yaml
-DATABASE_URL=jdbc:mysql://localhost:12345/CHANGE_ME_LATER
+# Database Relatedd - Development Profile Only
+DATABASE_URL=CHANGE_ME_LATER
 DATABASE_USERNAME=CHANGE_ME_LATER
 DATABASE_PASSWORD=CHANGE_ME_LATER
+
+# CORS Related
+ALLOWED_ORIGINS=CHANGE_ME_LATER
+
+# User Related
+ENCODER_SECRET=CHANGE_ME_LATER
+
+# Jwt Related
+JWT_PUB_KEY_LOCATION=CHANGE_ME_LATER
+JWT_PRIV_KEY_LOCATION=CHANGE_ME_LATER
+
+SPRING_PROFILE=CHANGE_LATER_IF_DEPLOY
 ```
 
 </details>
@@ -118,6 +131,14 @@ DATABASE_PASSWORD=CHANGE_ME_LATER
 * 0.0.1
     * CHANGE: Update README.md
     * ADD: Create entities, repositories, services and controllers
+* 0.0.56
+    * FEAT:
+        - User registration
+        - User authentication
+        - Resources authorization
+        - Jwt Issuing and validating
+        - Books creation, listing, borrowing and returning
+        - Api documentation with springdoc/swagger-ui
 
 ## <a name="contributing">🤝 Contributing</a>
 
