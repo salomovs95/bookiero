@@ -12,7 +12,7 @@
 
   <groupId>com.salomovs</groupId>
 	<artifactId>bookiero</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.56</version>
 	<name>Bookiero</name>
 	<description>A book management system</description>
 
@@ -64,24 +64,6 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-oauth2-authorization-server</artifactId>
     </dependency>
-
-    <!--dependency>
-      <groupId>io.jsonwebtoken</groupId>
-      <artifactId>jjwt-api</artifactId>
-      <version>${jjwt-version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>io.jsonwebtoken</groupId>
-      <artifactId>jjwt-impl</artifactId>
-      <version>${jjwt-version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>io.jsonwebtoken</groupId>
-      <artifactId>jjwt-jackson</artifactId>
-      <version>${jjwt-version}</version>
-    </dependency-->
 
     <dependency>
       <groupId>org.springframework.boot</groupId>
