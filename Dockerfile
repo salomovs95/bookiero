@@ -13,5 +13,14 @@ RUN ./mvnw -Dmaven.test.skip package
 
 FROM eclipse-temurin:21
 
+ENV SPRING_PROFILE 'production'
+ENV ALLOWED_ORIGINS '*'
+ENV ENCODER_SECRET ''
+
+ENV DATABASE_URL ''
+ENV DATABASE_USERNAME ''
+ENV DATABASE_PASSWORD ''
+
+EXPOSE 8080
 COPY --from=build /app/target/bookiero-0.0.56.jar app.jar
 CMD [ "java", "-jar", "./app.jar" ]
