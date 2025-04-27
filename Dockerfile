@@ -22,5 +22,5 @@ ENV DATABASE_USERNAME ''
 ENV DATABASE_PASSWORD ''
 
 EXPOSE 8080
-COPY --from=build /app/target/bookiero-0.0.56.jar app.jar
+COPY --from=build /app/target/bookiero-0.0.69.jar app.jar
 CMD [ "java", "-jar", "./app.jar" ]

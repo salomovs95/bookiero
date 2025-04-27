@@ -141,6 +141,9 @@ SPRING_PROFILE=CHANGE_LATER_IF_DEPLOY
         - Jwt Issuing and validating
         - Books creation, listing, borrowing and returning
         - Api documentation with springdoc/swagger-ui
+* 0.0.69:
+    * CHORE:
+        - First deployment
 
 ## <a name="contributing">🤝 Contributing</a>
 
