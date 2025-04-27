@@ -14,8 +14,3 @@ spring:
     password: ${DATABASE_PASSWORD}
   security:
     secret-random: ${ENCODER_SECRET}
-    oauth2:
-      resourceserver:
-        jwt:
-          public-key-location: ${JWT_PUB_KEY_LOCATION}
-          private-key-location: ${JWT_PRIV_KEY_LOCATION}
