@@ -177,7 +177,7 @@ public class AuthView {
   })
   @GetMapping("/users/info")
   public ResponseEntity<HttpResponse> getUserInfo(@RequestHeader("Authorization") String authorization) {
-    String subject = this.jwtDecoder.decode(authorization).getSubject();
+    String subject = this.jwtDecoder.decode(authorization.replace("Bearer ", "")).getSubject();
     User user = this.authController.loadUserByUsername(subject);
 
     return ResponseEntity.status(200).body(
