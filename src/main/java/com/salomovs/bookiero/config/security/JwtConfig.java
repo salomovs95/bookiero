@@ -1,11 +1,12 @@
 package com.salomovs.bookiero.config.security;
 
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.time.Duration;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -26,16 +27,29 @@ import com.nimbusds.jose.proc.SecurityContext;
 
 @Configuration @Profile("!test")
 public class JwtConfig {
-  @Value("${spring.security.oauth2.resourceserver.jwt.public-key-location}")
   private RSAPublicKey pubKey;
 
-  @Value("${spring.security.oauth2.resourceserver.jwt.private-key-location}")
-  private RSAPrivateKey privKey;
+  private KeyPair generateRsaKey() { 
+		KeyPair keyPair;
+		try {
+			KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+			keyPairGenerator.initialize(2048);
+			keyPair = keyPairGenerator.generateKeyPair();
+		}
+		catch (Exception ex) {
+			throw new IllegalStateException(ex);
+		}
+		return keyPair;
+	}
 
   @Bean
   public JWKSource<SecurityContext> jwkSource() {
+    KeyPair keyPair = generateRsaKey();
+    this.pubKey = (RSAPublicKey) keyPair.getPublic();
+    RSAPrivateKey privKey = (RSAPrivateKey) keyPair.getPrivate();
+
     RSAKey rsaKey = new RSAKey
-      .Builder(pubKey)
+      .Builder(this.pubKey)
 			.privateKey(privKey)
 			.keyID(UUID.randomUUID().toString())
 			.build();
@@ -51,8 +65,7 @@ public class JwtConfig {
       .build();
 
     OAuth2TokenValidator<Jwt> withClockSkew = new DelegatingOAuth2TokenValidator<>(
-      new JwtTimestampValidator(Duration.ofMinutes(60)) //,
-      //new JwtIssuerValidator(issuerUri)
+      new JwtTimestampValidator(Duration.ofMinutes(60))
     );
 
     decoder.setJwtValidator(withClockSkew);
