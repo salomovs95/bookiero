@@ -11,8 +11,3 @@ spring:
       allowed-origins: "*"
   security:
     secret-random: ENCODER_SUPER_SECRET
-    oauth2:
-      resourceserver:
-        jwt:
-          public-key-location: ${JWT_PUB_KEY_LOCATION}
-          private-key-location: ${JWT_PRIV_KEY_LOCATION}
