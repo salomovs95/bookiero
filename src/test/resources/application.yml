@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: unittest
+    active: test
   jpa:
     hibernate:
       ddl-auto: create-drop
@@ -11,3 +11,6 @@ spring:
       allowed-origins: "*"
   security:
     secret-random: ENCODER_SUPER_SECRET
+    jwt:
+      secret: JWT_SUPER_SECRET
+      issuer: JWT_SUPER_ISSUER

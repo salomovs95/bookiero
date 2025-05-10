@@ -1,5 +1,7 @@
 package com.salomovs.bookiero.controller;
 
+
+
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -23,13 +25,13 @@ public class AuthControllerTests {
   private UserRepository uRepo;
 
   @Autowired
-  private PasswordEncoder pEncoder;
+  private PasswordEncoder pwEncoder;
 
   private AuthController aController;
 
   @BeforeAll
   public void setup() {
-    aController = new AuthController(uRepo, pEncoder);
+    aController = new AuthController(uRepo, pwEncoder);
   }
 
   @Test

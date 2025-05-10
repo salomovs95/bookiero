@@ -1,7 +1,6 @@
 package com.salomovs.bookiero.config.security;
 
-import java.security.SecureRandom;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,9 +9,8 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
@@ -22,20 +20,20 @@ public class FilterChain {
   @Value("${spring.api.cors.allowed-origins}")
   private String allowedOrigins;
 
-  @Value("${spring.security.secret-random}")
-  private String securityRandomSecret;
+  @Autowired
+  private JwtFilter jwtFilter;
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     String[] whiteList = {
       "/v3/api-docs*/**",
       "/swagger-ui/**",
-      "/api/auth/signup",
       "/api/auth/login"
+      //"/api/auth/signup"
     };
 
     http
-      //.cors(Customizer.withDefaults())
+      .cors(Customizer.withDefaults())
       .csrf(c -> c.disable())
       .sessionManagement(session -> session
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -44,9 +42,7 @@ public class FilterChain {
         .requestMatchers(whiteList).permitAll()
         .anyRequest().authenticated()
       )
-      .oauth2ResourceServer(oauth -> oauth
-        .jwt(Customizer.withDefaults())
-      );
+      .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
     
     return http.build();
   }
@@ -63,11 +59,5 @@ public class FilterChain {
     source.registerCorsConfiguration("/**", config);
     
     return new CorsFilter(source);
-  }
-
-  @Bean
-  public PasswordEncoder passwordEncoder() {
-    SecureRandom secureRandom = new SecureRandom(securityRandomSecret.getBytes());
-    return new BCryptPasswordEncoder(16, secureRandom);
   }
 }
