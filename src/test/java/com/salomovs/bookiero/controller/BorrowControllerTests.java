@@ -21,16 +21,25 @@ import com.salomovs.bookiero.exception.BookBorrowingException;
 import com.salomovs.bookiero.exception.BorrowNotFoundException;
 import com.salomovs.bookiero.model.entity.Book;
 import com.salomovs.bookiero.model.entity.User;
+import com.salomovs.bookiero.model.repository.AuthorRepository;
 import com.salomovs.bookiero.model.repository.BookBorrowRepository;
 import com.salomovs.bookiero.model.repository.BookRepository;
 import com.salomovs.bookiero.model.repository.UserRepository;
 
-@Tag("BORROWING") @Sql(scripts="/borrow.sql", executionPhase = ExecutionPhase.BEFORE_TEST_CLASS)
-@SpringBootTest @TestInstance(Lifecycle.PER_CLASS)
+@Tag("BORROWING")
+@SpringBootTest
+@TestInstance(Lifecycle.PER_CLASS)
+@Sql(
+  scripts={"/borrow.sql"},
+  executionPhase=ExecutionPhase.BEFORE_TEST_CLASS
+)
 public class BorrowControllerTests {
   @Autowired
   private UserRepository userRepo;
   private AuthController aController;
+
+  @Autowired
+  private AuthorRepository authorRepo;
 
   @Autowired
   private BookRepository bookRepo;
@@ -43,7 +52,7 @@ public class BorrowControllerTests {
   @BeforeAll
   private void setup() {
     aController = new AuthController(userRepo, null);
-    bController = new BookController(bookRepo);
+    bController = new BookController(authorRepo, bookRepo);
     bbController = new BorrowController(borrowRepo);
   }
 
