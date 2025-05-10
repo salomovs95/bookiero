@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -36,12 +38,12 @@ public class Book {
   @Column(nullable=false)
   private String category;
 
-  @Column(name="author_name", nullable=false)
-  private String authorName;
-
   @Column(nullable=false)
   private String editor;
 
   @Column(name="in_stock_amount", nullable=false)
   private Integer inStockAmount;
+
+  @ManyToOne @JoinColumn(name="author_id", referencedColumnName="id")
+  private Author author;
 }

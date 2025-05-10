@@ -15,20 +15,18 @@ public class AuthController implements UserDetailsService {
   private PasswordEncoder pwEncoder;
 
   public AuthController(final UserRepository userRepo,
-                        final PasswordEncoder passwordEncoder) {
+                        final PasswordEncoder pwEncoder) {
     this.userRepo = userRepo;
-    this.pwEncoder = passwordEncoder;
+    this.pwEncoder = pwEncoder;
   }
 
   public Integer saveUserInfo(UserSignUpDto dto) {
-    String encodedPassword = this.pwEncoder.encode(dto.password());
-    
     User newUser = this.userRepo.save(new User(
       null,
       dto.fullName(),
       dto.username(),
       dto.taxId(),
-      encodedPassword,
+      pwEncoder.encode(dto.password()),
       dto.email(),
       dto.phone(),
       dto.address(),

@@ -11,12 +11,12 @@ public class BookMapper {
       book.getEsbn(),
       book.getEdition(),
       book.getCategory(),
-      book.getAuthorName(),
       book.getEditor(),
       book.getPageCount(),
       book.getPublishYear(),
       book.getInStockAmount(),
-      borrowCount
+      borrowCount,
+      book.getAuthor()
     );
   }
 }

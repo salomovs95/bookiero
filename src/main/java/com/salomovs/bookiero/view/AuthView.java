@@ -1,7 +1,5 @@
 package com.salomovs.bookiero.view;
 
-import java.time.Instant;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -14,10 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.jwt.JwtClaimsSet;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
-import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.salomovs.bookiero.config.security.JwtService;
 import com.salomovs.bookiero.controller.AuthController;
 import com.salomovs.bookiero.mapper.UserMapper;
 import com.salomovs.bookiero.model.entity.User;
@@ -36,19 +32,16 @@ import com.salomovs.bookiero.view.dto.UserSignUpDto;
 @RestController @RequestMapping("/api/auth")
 public class AuthView {
   private AuthController authController;
-  private AuthenticationManager authManager;
-  private JwtEncoder jwtEncoder;
-  private JwtDecoder jwtDecoder;
+  private AuthenticationManager authenticationManager;
+  private JwtService jwtService;
 
   public AuthView(final AuthController authController,
-                  final AuthenticationManager authManager,
-                  final JwtEncoder encoder,
-                  final JwtDecoder jwtDecoder
+                  final AuthenticationManager authenticationManager,
+                  final JwtService jwtService
   ) {
     this.authController = authController;
-    this.authManager = authManager;
-    this.jwtEncoder = encoder;
-    this.jwtDecoder = jwtDecoder;
+    this.authenticationManager = authenticationManager;
+    this.jwtService = jwtService;
   }
 
   @Operation(
@@ -128,23 +121,12 @@ public class AuthView {
   })
   @PostMapping("/login")
   public ResponseEntity<HttpResponse> handleLogin(@RequestBody UserLoginDto body) {
-    Authentication authentication = this.authManager.authenticate(
+    Authentication authentication = this.authenticationManager.authenticate(
       UsernamePasswordAuthenticationToken.unauthenticated(body.credential(), body.password())
     );
 
-    User userDetails = (User) authentication.getPrincipal();
-    String jwtToken = this.jwtEncoder.encode(
-      JwtEncoderParameters.from(
-        JwtClaimsSet
-          .builder()
-          .claim("username", userDetails.getUsername())
-          .claim("role", userDetails.getRole())
-          .issuedAt(Instant.now())
-          .expiresAt(Instant.now().plusSeconds(60*60))
-          .subject(userDetails.getEmail())
-          .build()
-      )
-    ).getTokenValue();
+    UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+    String jwtToken = this.jwtService.generateToken(userDetails);
 
     return ResponseEntity.status(200).body(new HttpResponse(true, jwtToken));
   }
@@ -176,8 +158,8 @@ public class AuthView {
     )
   })
   @GetMapping("/users/info")
-  public ResponseEntity<HttpResponse> getUserInfo(@RequestHeader("Authorization") String authorization) {
-    String subject = this.jwtDecoder.decode(authorization.replace("Bearer ", "")).getSubject();
+  public ResponseEntity<HttpResponse> getUserInfo(@Schema(hidden=true) @RequestHeader("Authorization") String authorization) {
+    String subject = this.jwtService.verify(authorization.replace("Bearer ", ""));
     User user = this.authController.loadUserByUsername(subject);
 
     return ResponseEntity.status(200).body(
