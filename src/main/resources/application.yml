@@ -6,11 +6,16 @@ spring:
       allowed-origins: ${ALLOWED_ORIGINS}
   jpa:
     open-in-view: false
+    hibernate:
+      ddl-auto: update
   profiles:
     active: ${SPRING_PROFILE:develop}
   datasource:
-    url: ${DATABASE_URL}/bookiero
+    url: ${DATABASE_URL}
     username: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
   security:
     secret-random: ${ENCODER_SECRET}
+    jwt:
+      secret: ${JWT_SECRET}
+      issuer: ${JWT_ISSUER}
