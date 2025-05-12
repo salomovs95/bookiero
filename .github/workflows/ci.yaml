@@ -13,6 +13,8 @@ jobs:
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
+        with:
+          fetch-depth: "0"
 
       - name: Check commit count
         run: git rev-list --full-history --all | wc -l
