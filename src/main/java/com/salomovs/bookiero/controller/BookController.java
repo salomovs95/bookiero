@@ -36,6 +36,7 @@ public class BookController {
       dto.category(),
       dto.editor(),
       dto.inStockAmount(),
+      dto.bookCover().orElse(null),
       author
     ));
 
