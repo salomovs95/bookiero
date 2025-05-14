@@ -145,7 +145,7 @@ SPRING_PROFILE=CHANGE_LATER_IF_DEPLOY
     * CHORE:
         - First deployment
         - Tests passing
-* 0.0.90
+* 0.0.94:
     * UPDATE:
         - Code enhancement/refactoring and minor adjustments
 
