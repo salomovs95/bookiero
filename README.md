@@ -52,7 +52,7 @@
 ## <a name="tech-stack">⚙️ Tech Stack</a>
 
 - Java + Spring Boot 3, for handling requests
-- MySQL, for data persistence
+- MySQL/PostgreSQL, for data persistence
 - Spring Security, for handling authentication/authorization
 - Maven, for build/dependency management
 - Springdoc/Swagger, to document the api
@@ -96,7 +96,7 @@ mvn clean install
 ```bash
 mvn clean spring-boot:run
 #or
-./mvnw clean spring-boot:run
+./mvnw clean -DskipTests=true spring-boot:run
 ```
 
 Open [localhost:8080/swagger-ui/index.html](localhost:8080/swagger-ui/index.html) in your browser to view the project to test the api.
@@ -120,8 +120,8 @@ ALLOWED_ORIGINS=CHANGE_ME_LATER
 ENCODER_SECRET=CHANGE_ME_LATER
 
 # Jwt Related
-JWT_PUB_KEY_LOCATION=CHANGE_ME_LATER
-JWT_PRIV_KEY_LOCATION=CHANGE_ME_LATER
+JWT_SECRET=CHANGE_ME_LATER
+JWT_ISSUER=CHANGE_ME_LATER
 
 SPRING_PROFILE=CHANGE_LATER_IF_DEPLOY
 ```
@@ -144,6 +144,10 @@ SPRING_PROFILE=CHANGE_LATER_IF_DEPLOY
 * 0.0.69:
     * CHORE:
         - First deployment
+        - Tests passing
+* 0.0.90
+    * UPDATE:
+        - Code enhancement/refactoring and minor adjustments
 
 ## <a name="contributing">🤝 Contributing</a>
 
