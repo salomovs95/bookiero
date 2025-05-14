@@ -1,5 +1,6 @@
 package com.salomovs.bookiero.model.entity;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 
@@ -18,6 +19,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import com.salomovs.bookiero.enums.Roles;
 
 @Getter @Setter @AllArgsConstructor @NoArgsConstructor
 @Entity @Table(name="users")
@@ -40,6 +43,7 @@ public class User implements UserDetails {
   @Column(nullable=false, unique=true)
   private String email;
   
+
   @Column(nullable=false, unique=true)
   private String phone;
 
@@ -49,10 +53,13 @@ public class User implements UserDetails {
   @Column(nullable=true)
   private String role;
 
+  @Column(name="joined_at", nullable=false)
+  private LocalDate joinedAt;
+
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
     return List.of( new SimpleGrantedAuthority(
-        this.getRole() == null ? "USERS.COMMON" : this.getRole()
+        this.getRole() == null ? Roles.USER_COMMON.toString() : this.getRole()
     ) );
   }
 }
