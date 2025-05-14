@@ -44,6 +44,9 @@ public class Book {
   @Column(name="in_stock_amount", nullable=false)
   private Integer inStockAmount;
 
+  @Column(name="book_cover", nullable=true)
+  private String bookCover;
+
   @ManyToOne @JoinColumn(name="author_id", referencedColumnName="id")
   private Author author;
 }

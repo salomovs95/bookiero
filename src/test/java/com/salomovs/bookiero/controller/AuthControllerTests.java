@@ -5,6 +5,8 @@ package com.salomovs.bookiero.controller;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -15,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.salomovs.bookiero.enums.Roles;
 import com.salomovs.bookiero.model.repository.UserRepository;
 import com.salomovs.bookiero.view.dto.UserSignUpDto;
 
@@ -36,13 +39,13 @@ public class AuthControllerTests {
 
   @Test
   public void ShouldCreateUserSuccess() {
-    UserSignUpDto newUser = new UserSignUpDto("user 001", "user001", "user001-tax-id", "user001@password", "ueer001_email@test.io", "user001-phone", "user001 st., address");
+    UserSignUpDto newUser = new UserSignUpDto("user 001", "user001", "user001-tax-id", "user001@password", "ueer001_email@test.io", "user001-phone", "user001 st., address", Optional.of(Roles.USER_ADMIN.toString()));
     assertDoesNotThrow(()->aController.saveUserInfo(newUser));
   }
 
   @Test
   public void ShouldCreateUserFail() {
-    UserSignUpDto newUser = new UserSignUpDto(null, null, null, null, null, null, null);
+    UserSignUpDto newUser = new UserSignUpDto(null, null, null, null, null, null, null, Optional.empty());
     assertThrows(Exception.class, ()->aController.saveUserInfo(newUser));
   }
 }

@@ -1,9 +1,12 @@
 package com.salomovs.bookiero.controller;
 
+import java.time.LocalDate;
+
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.salomovs.bookiero.enums.Roles;
 import com.salomovs.bookiero.exception.UserNotFoundException;
 import com.salomovs.bookiero.model.entity.User;
 import com.salomovs.bookiero.model.repository.UserRepository;
@@ -30,7 +33,8 @@ public class AuthController implements UserDetailsService {
       dto.email(),
       dto.phone(),
       dto.address(),
-      "USERS.COMMON"
+      Roles.valueOf(dto.role().orElse("USER_COMMON")).toString(),
+      LocalDate.now()
     ));
 
     return newUser.getId();

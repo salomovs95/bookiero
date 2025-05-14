@@ -3,6 +3,8 @@ package com.salomovs.bookiero.controller;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -42,7 +44,7 @@ public class BookControllerTests {
 
   @Test
   public void CreateBookSuccess() {
-    CreateBookDto dto = new CreateBookDto("title", 999, "category", "esbn", "edition", "editor", 2025, 1, 95);
+    CreateBookDto dto = new CreateBookDto("title", 999, "category", "esbn", "edition", "editor", 2025, 1, Optional.empty(), 95);
     assertDoesNotThrow(()->bController.create(dto));
   }
 
@@ -53,7 +55,7 @@ public class BookControllerTests {
 
   @Test
   public void CreateBookFailInvalidDto() {
-    CreateBookDto dto = new CreateBookDto(null, null, null, null, null, null, null, null, null);
+    CreateBookDto dto = new CreateBookDto(null, null, null, null, null, null, null, null, null, null);
     assertThrows(Exception.class, ()->bController.create(dto));
   }
 
