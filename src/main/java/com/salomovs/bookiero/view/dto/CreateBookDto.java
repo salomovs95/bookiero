@@ -3,7 +3,6 @@ package com.salomovs.bookiero.view.dto;
 import java.util.Optional;
 
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
@@ -17,5 +16,5 @@ public record CreateBookDto(
   @NotNull @Min(1) Integer publishYear,
   @NotNull @Min(1) Integer inStockAmount,
   Optional<String> bookCover,
-  @NotNull @NotEmpty @NotBlank Integer authorId
+  @NotNull Integer authorId
 ) {}
