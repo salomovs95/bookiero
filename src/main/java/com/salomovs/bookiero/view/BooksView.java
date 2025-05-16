@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,7 +43,6 @@ public class BooksView {
 
   @ApiOperation(summary="Book Creation Handler", security="jwt")
   @PostMapping("/")
-  @PreAuthorize("hasRole('USER_ADMIN')")
   public ResponseEntity<HttpResponse> registerBook(@RequestBody @Valid CreateBookDto body) {
     Integer bookId = this.bookController.create(body);
     return ResponseEntity.status(201).body(new HttpResponse(true, String.format("{ \"id\": %d }", bookId)));
