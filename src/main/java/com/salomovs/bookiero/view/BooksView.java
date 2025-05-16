@@ -64,6 +64,20 @@ public class BooksView {
     return ResponseEntity.status(200).body(responseBody);
   }
 
+  @ApiOperation(summary="Get Top Books", security="jwt")
+  @GetMapping("/top-3")
+  public ResponseEntity<List<BookData>> getMostBorrowedBooks() {
+    List<BookData> responseBody = this.bookController
+      .listMostBorrowedBooks()
+      .stream()
+      .map(b->BookData.from(
+         b,
+         borrowController.countActiveBorrows(b.getId()))
+      )
+      .collect(Collectors.toList());
+    return ResponseEntity.status(200).body(responseBody);
+  }
+
   @ApiOperation(summary="Book Specific Info Handler", security="jwt")
   @GetMapping("/{book_id}")
   public ResponseEntity<HttpResponse> findSpecificBook(@PathVariable(name="book_id") Integer bookId) {

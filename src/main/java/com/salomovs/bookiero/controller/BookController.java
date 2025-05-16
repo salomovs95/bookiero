@@ -54,6 +54,10 @@ public class BookController {
     return this.bookRepo.findAll();
   }
 
+  public List<Book> listMostBorrowedBooks() {
+    return this.bookRepo.retrieveMostBorrowsBooks();
+  }
+
   public Integer registerAuthor(RegisterAuthorDTO dto) {
     var author = new Author(null, dto.fullName(), dto.profilePicture());
     return this.authorRepo.save(author).getId();
