@@ -25,6 +25,7 @@ import com.salomovs.bookiero.model.entity.User;
 import com.salomovs.bookiero.view.dto.BookData;
 import com.salomovs.bookiero.view.dto.CreateBookDto;
 import com.salomovs.bookiero.view.dto.HttpResponse;
+import com.salomovs.bookiero.view.dto.RegisterAuthorDTO;
 
 @Tag(name="Books View", description="Handles operations on books and borrowing")
 @RestController @RequestMapping("/api/books")
@@ -101,6 +102,13 @@ public class BooksView {
   public ResponseEntity<HttpResponse> returnBook(@PathVariable(name="borrow_id") Integer borrowId) {
     this.borrowController.returnBook(borrowId);
     return ResponseEntity.status(200).body(new HttpResponse(true, null));
+  }
+
+  @ApiOperation(summary="Author Registration", security="jwt")
+  @PostMapping("/authors")
+  public ResponseEntity<HttpResponse> registerAuthor(@RequestBody @Valid RegisterAuthorDTO body) {
+    int authorId = this.bookController.registerAuthor(body);
+    return ResponseEntity.status(201).body(new HttpResponse(true, authorId));
   }
 
   @ApiOperation(summary="Top Authors Ranking", security="jwt")

@@ -31,14 +31,14 @@ public class FilterChain {
     String[] publicRoutes = {
       "/v3/api-docs*/**",
       "/swagger-ui/**",
-      "/api/auth/login"
-      //"/api/auth/signup"
+      "/api/auth/login",
+      "/api/auth/signup"
     };
 
     String[] adminPostRoutes = {
       "/api/books/",
-      "/api/books/borrows/**"
-      //"/api/auth/signup"
+      "/api/books/borrows/**",
+      "/api/books/authors"
     };
 
     String[] adminPatchRoutes = { "/api/books/borrows/**" };

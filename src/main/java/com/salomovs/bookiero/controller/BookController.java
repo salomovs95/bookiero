@@ -44,30 +44,36 @@ public class BookController {
   }
 
   public Book findBookById(Integer bookId) {
-    Book book = this.bookRepo.findById(bookId).orElseThrow(
-      ()->new BookNotFoundException(bookId)
-    );
+    Book book = this.bookRepo
+                    .findById(bookId)
+                    .orElseThrow(()->new BookNotFoundException(bookId));
     return book;
   }
 
   public List<Book> listBook() {
-    return this.bookRepo.findAll();
+    return this.bookRepo
+               .findAll();
   }
 
   public List<Book> listMostBorrowedBooks() {
-    return this.bookRepo.retrieveMostBorrowsBooks();
+    return this.bookRepo
+               .retrieveMostBorrowsBooks();
   }
 
   public Integer registerAuthor(RegisterAuthorDTO dto) {
-    var author = new Author(null, dto.fullName(), dto.profilePicture());
+    var author = new Author(
+      null,
+      dto.fullName(),
+      dto.profilePicture()
+    );
+
     return this.authorRepo.save(author).getId();
   }
 
   public Author findAuthor(Integer authorId) {
-    Author author = this.authorRepo
-                        .findById(authorId)
-                        .orElseThrow(()->new AuthorNotFoundException(String.format("No Author Was Found With ID %s", authorId)));
-    return author;
+    return this.authorRepo
+               .findById(authorId)
+               .orElseThrow(() -> new AuthorNotFoundException(authorId));
   }
 
   public List<Author> listMostPopularAuthors() {
