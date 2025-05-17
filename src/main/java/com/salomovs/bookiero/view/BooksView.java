@@ -62,8 +62,8 @@ public class BooksView {
     return ResponseEntity.status(200).body(responseBody);
   }
 
-  @ApiOperation(summary="Get Top Books", security="jwt")
-  @GetMapping("/top-3")
+  @ApiOperation(summary="Top Books Ranking", security="jwt")
+  @GetMapping("/ranking")
   public ResponseEntity<List<BookData>> getMostBorrowedBooks() {
     List<BookData> responseBody = this.bookController
       .listMostBorrowedBooks()
@@ -101,5 +101,12 @@ public class BooksView {
   public ResponseEntity<HttpResponse> returnBook(@PathVariable(name="borrow_id") Integer borrowId) {
     this.borrowController.returnBook(borrowId);
     return ResponseEntity.status(200).body(new HttpResponse(true, null));
+  }
+
+  @ApiOperation(summary="Top Authors Ranking", security="jwt")
+  @GetMapping("/authors/ranking")
+  public ResponseEntity<HttpResponse> getMostPopularAuthors() {
+    var authors = this.bookController.listMostPopularAuthors();
+    return ResponseEntity.status(200).body(new HttpResponse(true, authors));
   }
 }
