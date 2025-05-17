@@ -148,6 +148,9 @@ SPRING_PROFILE=CHANGE_LATER_IF_DEPLOY
 * 0.0.97:
     * UPDATE:
         - Code enhancement/refactoring and minor adjustments
+* 0.1.11
+    * FEAT:
+        - Can now retrieve most popular books/authors ranking
 
 ## <a name="contributing">🤝 Contributing</a>
 

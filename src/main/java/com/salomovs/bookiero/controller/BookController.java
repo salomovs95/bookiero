@@ -69,4 +69,9 @@ public class BookController {
                         .orElseThrow(()->new AuthorNotFoundException(String.format("No Author Was Found With ID %s", authorId)));
     return author;
   }
+
+  public List<Author> listMostPopularAuthors() {
+    return this.authorRepo
+               .retrieveMostPopularAuthors();
+  }
 }
