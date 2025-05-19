@@ -13,12 +13,25 @@ public record BookData(
   String editor,
   Integer pageCount,
   Integer publishYear,
-  Integer inStockAmount,
-  Long borrowCount,
+  Long inStockAmount,
   String bookCover,
+  Boolean isAvailable,
   Author author
 ) {
   public static BookData from(Book book, Long borrowCount) {
-    return new BookData(book.getId(), book.getTitle(), book.getEsbn(), book.getEdition(), book.getCategory(), book.getEditor(), book.getPageCount(), book.getPublishYear(), book.getInStockAmount(), borrowCount, book.getBookCover(), book.getAuthor());
+    return new BookData(
+      book.getId(),
+      book.getTitle(),
+      book.getEsbn(),
+      book.getEdition(),
+      book.getCategory(),
+      book.getEditor(),
+      book.getPageCount(),
+      book.getPublishYear(),
+      book.getInStockAmount(),
+      book.getBookCover(),
+      book.getInStockAmount().equals(borrowCount),
+      book.getAuthor()
+    );
   }
 }
