@@ -2,6 +2,9 @@ package com.salomovs.bookiero.controller;
 
 import java.util.List;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import com.salomovs.bookiero.exception.AuthorNotFoundException;
@@ -48,6 +51,12 @@ public class BookController {
                     .findById(bookId)
                     .orElseThrow(()->new BookNotFoundException(bookId));
     return book;
+  }
+
+  public Slice<Book> paginateBooks(Integer page) {
+    Pageable pageRequest = PageRequest.of(page, 20);
+    return this.bookRepo.findAll(pageRequest);
+
   }
 
   public List<Book> listBook() {

@@ -46,7 +46,7 @@ public class BookControllerTests {
 
   @Test
   public void CreateBookSuccess() {
-    CreateBookDto dto = new CreateBookDto("title", 999, "category", "esbn", "edition", "editor", 2025, 1, Optional.empty(), 95);
+    CreateBookDto dto = new CreateBookDto("title", 999, "category", "esbn", "edition", "editor", 2025, 1l, Optional.of("bookCover"), 95);
     assertDoesNotThrow(()->bController.create(dto));
   }
 
