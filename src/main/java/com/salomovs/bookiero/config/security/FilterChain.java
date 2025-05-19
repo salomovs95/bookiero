@@ -32,7 +32,9 @@ public class FilterChain {
       "/v3/api-docs*/**",
       "/swagger-ui/**",
       "/api/auth/login",
-      "/api/auth/signup"
+      "/api/auth/signup",
+      "/api/books/ranking",
+      "/api/books/authors/ranking"
     };
 
     String[] adminPostRoutes = {
