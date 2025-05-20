@@ -16,10 +16,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.Sql.ExecutionPhase;
 
+import com.salomovs.bookiero.exception.AuthorNotFoundException;
 import com.salomovs.bookiero.exception.BookNotFoundException;
 import com.salomovs.bookiero.model.repository.AuthorRepository;
 import com.salomovs.bookiero.model.repository.BookRepository;
 import com.salomovs.bookiero.view.dto.CreateBookDto;
+import com.salomovs.bookiero.view.dto.RegisterAuthorDTO;
 
 @Tag("BOOKS")
 @SpringBootTest
@@ -44,7 +46,7 @@ public class BookControllerTests {
 
   @Test
   public void CreateBookSuccess() {
-    CreateBookDto dto = new CreateBookDto("title", 999, "category", "esbn", "edition", "editor", 2025, 1, Optional.empty(), 95);
+    CreateBookDto dto = new CreateBookDto("title", 999, "category", "esbn", "edition", "editor", 2025, 1l, Optional.of("bookCover"), 95);
     assertDoesNotThrow(()->bController.create(dto));
   }
 
@@ -67,5 +69,34 @@ public class BookControllerTests {
   @Test
   public void FindBookFail() {
     assertThrows(BookNotFoundException.class, ()->bController.findBookById(0));
+  }
+
+  @Test
+  public void RegisterAuthorSuccess() {
+    RegisterAuthorDTO dto = new RegisterAuthorDTO("Author 001", "author-001-pic");
+    assertDoesNotThrow(()->bController.registerAuthor(dto));
+  }
+
+  @Test
+  public void RegisterAuthorFail() {
+    RegisterAuthorDTO dto = new RegisterAuthorDTO(null, null);
+    assertThrows(Exception.class, ()->bController.registerAuthor(dto));
+  }
+
+  @Test
+  public void RegisterAuthorFailNullDto() {
+    assertThrows(NullPointerException.class, ()->bController.registerAuthor(null));
+  }
+
+  @Test
+  public void FindAuthorSuccess() {
+    int authorId = 95;
+    assertDoesNotThrow(()->bController.findAuthor(authorId));
+  }
+
+  @Test
+  public void FindAuthorFail() {
+    int authorId = 999;
+    assertThrows(AuthorNotFoundException.class, ()->bController.findAuthor(authorId));
   }
 }

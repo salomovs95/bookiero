@@ -14,7 +14,7 @@ public record CreateBookDto(
   @NotNull @NotEmpty String edition,
   @NotNull @NotEmpty String editor,
   @NotNull @Min(1) Integer publishYear,
-  @NotNull @Min(1) Integer inStockAmount,
+  @NotNull @Min(1) Long inStockAmount,
   Optional<String> bookCover,
   @NotNull Integer authorId
 ) {}

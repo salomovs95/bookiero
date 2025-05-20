@@ -12,7 +12,7 @@
 
   <groupId>com.salomovs</groupId>
 	<artifactId>bookiero</artifactId>
-	<version>0.1.11</version>
+	<version>0.1.21</version>
 	<name>Bookiero</name>
 	<description>A book management system</description>
 

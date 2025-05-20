@@ -3,6 +3,9 @@ package com.salomovs.bookiero.view;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,7 +22,6 @@ import com.salomovs.bookiero.annotation.ApiOperation;
 import com.salomovs.bookiero.config.security.JwtService;
 import com.salomovs.bookiero.controller.AuthController;
 import com.salomovs.bookiero.model.entity.User;
-import com.salomovs.bookiero.view.dto.HttpResponse;
 import com.salomovs.bookiero.view.dto.UserData;
 import com.salomovs.bookiero.view.dto.UserLoginDto;
 import com.salomovs.bookiero.view.dto.UserSignUpDto;
@@ -42,32 +44,35 @@ public class AuthView {
 
   @ApiOperation(summary="User Registration Handler", security="")
   @PostMapping("/signup")
-  public ResponseEntity<HttpResponse> handleSignUp(@RequestBody UserSignUpDto body) {
+  public ResponseEntity<Map<String, Integer>> handleSignUp(@RequestBody UserSignUpDto body) {
     int newUserId = this.authController.saveUserInfo(body);
-    return ResponseEntity.status(201).body(new HttpResponse(true, newUserId));
+    Map<String, Integer> map = new HashMap<>();
+    map.put("user_id", newUserId);
+
+    return ResponseEntity.status(201).body(map);
   }
 
   @ApiOperation(summary="User Authentication Handler", security="")
   @PostMapping("/login")
-  public ResponseEntity<HttpResponse> handleLogin(@RequestBody UserLoginDto body) {
+  public ResponseEntity<Map<String, String>> handleLogin(@RequestBody UserLoginDto body) {
     Authentication authentication = this.authenticationManager.authenticate(
       UsernamePasswordAuthenticationToken.unauthenticated(body.credential(), body.password())
     );
 
     UserDetails userDetails = (UserDetails) authentication.getPrincipal();
     String jwtToken = this.jwtService.generateToken(userDetails);
-
-    return ResponseEntity.status(200).body(new HttpResponse(true, jwtToken));
+    Map<String, String> map = new HashMap<>();
+    map.put("access_token", jwtToken);
+    
+    return ResponseEntity.status(200).body(map);
   }
 
   @ApiOperation(summary="Retrieve User Info", security="jwt")
   @GetMapping("/users/info")
-  public ResponseEntity<HttpResponse> getUserInfo(@Schema(hidden=true) @RequestHeader("Authorization") String authorization) {
+  public ResponseEntity<UserData> getUserInfo(@Schema(hidden=true) @RequestHeader("Authorization") String authorization) {
     String subject = this.jwtService.verify(authorization.replace("Bearer ", ""));
     User user = this.authController.loadUserByUsername(subject);
 
-    return ResponseEntity.status(200).body(
-      new HttpResponse(true, UserData.from(user))
-    );
+    return ResponseEntity.status(200).body(UserData.from(user));
   }
 }
