@@ -148,9 +148,15 @@ SPRING_PROFILE=CHANGE_LATER_IF_DEPLOY
 * 0.0.97:
     * UPDATE:
         - Code enhancement/refactoring and minor adjustments
-* 0.1.11
+* 0.1.11:
     * FEAT:
         - Can now retrieve most popular books/authors ranking
+* 0.1.21:
+    * FIX:
+        - Password hashing taking too long
+    * FEAT:
+        - Book listing can now be paginated
+        - Book listing can now be filtered
 
 ## <a name="contributing">🤝 Contributing</a>
 
