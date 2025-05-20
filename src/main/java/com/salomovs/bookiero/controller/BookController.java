@@ -47,16 +47,15 @@ public class BookController {
   }
 
   public Book findBookById(Integer bookId) {
-    Book book = this.bookRepo
-                    .findById(bookId)
-                    .orElseThrow(()->new BookNotFoundException(bookId));
-    return book;
+    return this.bookRepo
+               .findById(bookId)
+               .orElseThrow(()->new BookNotFoundException(bookId));
   }
 
-  public Slice<Book> paginateBooks(Integer page) {
+  public Slice<Book> paginateBooks(String predicate, Integer page) {
     Pageable pageRequest = PageRequest.of(page, 20);
-    return this.bookRepo.findAll(pageRequest);
-
+    return this.bookRepo
+               .findByPredicate(predicate, pageRequest);
   }
 
   public List<Book> listBook() {

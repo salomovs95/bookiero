@@ -74,14 +74,18 @@ public class BooksView {
 
   @ApiOperation(summary="List Books Paginated", security="jwt")
   @GetMapping("/")
-  public ResponseEntity<Map<String, Object>> getPaginatedBooks(@RequestParam(name="page") Optional<Integer> page) {
+  public ResponseEntity<Map<String, Object>> getPaginatedBooks(@RequestParam(name="page") Optional<Integer> page,
+                                                               @RequestParam(name="search") Optional<String> search) {
     Integer pageNumber = page.orElse(0);
-    Slice<Book> slice = this.bookController
-                           .paginateBooks(pageNumber);
-    Map<String,Object> map = new HashMap<>();
+    String predicate = search.orElse("");
 
+    Slice<Book> slice = this.bookController
+                            .paginateBooks(predicate, pageNumber);
+    
+    Map<String,Object> map = new HashMap<>();
     map.put("page_number", pageNumber);
     map.put("has_next", slice.hasNext());
+
     map.put("book_list", slice.stream().map(b->(
       BookData.from(
         b,
@@ -95,8 +99,11 @@ public class BooksView {
   @ApiOperation(summary="Book Specific Info Handler", security="jwt")
   @GetMapping("/{book_id}")
   public ResponseEntity<BookData> findSpecificBook(@PathVariable(name="book_id") Integer bookId) {
-    Book book = this.bookController.findBookById(bookId);
-    Long activeBorrows = this.borrowController.countActiveBorrows(book.getId());
+    Book book = this.bookController
+                    .findBookById(bookId);
+
+    Long activeBorrows = this.borrowController
+                             .countActiveBorrows(book.getId());
 
     return ResponseEntity.status(200).body(BookData.from(book, activeBorrows));
   }
@@ -104,10 +111,13 @@ public class BooksView {
   @ApiOperation(summary="Book Borrowing Handler",security="jwt")
   @PostMapping("/borrows/{book_id}/{user_id}")
   public ResponseEntity<Map<String, Integer>> borrowABook(@PathVariable(name="book_id") Integer bookId,
-                                                  @PathVariable(name="user_id") Integer userId) {
-    User user = this.authController.getUserInfo(userId);
-    Book book = this.bookController.findBookById(bookId);    
-    int newBorrowId = this.borrowController.borrowBook(book, user);
+                                                          @PathVariable(name="user_id") Integer userId) {
+    User user = this.authController
+                    .getUserInfo(userId);
+    Book book = this.bookController
+                    .findBookById(bookId);    
+    int newBorrowId = this.borrowController
+                          .borrowBook(book, user);
 
     Map<String, Integer> map = new HashMap<>();
     map.put("borrow_id", newBorrowId);
@@ -118,7 +128,9 @@ public class BooksView {
   @ApiOperation(summary="Book Return Handler", security="jwt")
   @PatchMapping("/borrows/{borrow_id}/return")
   public ResponseEntity<Map<String, Boolean>> returnBook(@PathVariable(name="borrow_id") Integer borrowId) {
-    this.borrowController.returnBook(borrowId);
+    this.borrowController
+        .returnBook(borrowId);
+    
     Map<String, Boolean> map = new HashMap<>();
     map.put("ok", true);
 
@@ -128,7 +140,9 @@ public class BooksView {
   @ApiOperation(summary="Author Registration", security="jwt")
   @PostMapping("/authors")
   public ResponseEntity<Map<String, Integer>> registerAuthor(@RequestBody @Valid RegisterAuthorDTO body) {
-    int authorId = this.bookController.registerAuthor(body);
+    int authorId = this.bookController
+                       .registerAuthor(body);
+    
     Map<String, Integer> map = new HashMap<>();
     map.put("author_id", authorId);
     
@@ -138,7 +152,8 @@ public class BooksView {
   @ApiOperation(summary="Top Authors Ranking", security="")
   @GetMapping("/authors/ranking")
   public ResponseEntity<List<Author>> getMostPopularAuthors() {
-    List<Author> authors = this.bookController.listMostPopularAuthors();
+    List<Author> authors = this.bookController
+                               .listMostPopularAuthors();
     
     return ResponseEntity.status(200).body(authors);
   }
