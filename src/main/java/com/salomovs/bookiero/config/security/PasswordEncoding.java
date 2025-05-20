@@ -16,6 +16,6 @@ public class PasswordEncoding {
   @Bean
   public PasswordEncoder passwordEncoder() {
     SecureRandom secureRandom = new SecureRandom(randomSecret.getBytes());
-    return new BCryptPasswordEncoder(16, secureRandom);
+    return new BCryptPasswordEncoder(12, secureRandom);
   }
 }
