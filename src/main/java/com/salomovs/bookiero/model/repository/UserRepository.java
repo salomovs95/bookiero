@@ -12,7 +12,12 @@ import com.salomovs.bookiero.model.entity.User;
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
   @Query(
-    value="SELECT * FROM users u WHERE u.username = :credential OR u.email = :credential",
+    value="""
+      SELECT * 
+      FROM users u 
+      WHERE u.username = :credential 
+      OR u.email = :credential
+    """,
     nativeQuery=true
   )
   public Optional<User> findByUsernameOrEmail(@Param("credential") String credential);
