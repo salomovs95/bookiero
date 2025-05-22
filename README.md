@@ -157,6 +157,9 @@ SPRING_PROFILE=CHANGE_LATER_IF_DEPLOY
     * FEAT:
         - Book listing can now be paginated
         - Book listing can now be filtered
+* 0.1.26:
+    * ANALYTICS:
+       - Admin can retrieve dashboard data, such as borrows/returns per period as well as other core data centralized.
 
 ## <a name="contributing">🤝 Contributing</a>
 
