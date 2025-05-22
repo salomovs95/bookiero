@@ -1,10 +1,10 @@
 <div align="center">
   <br />
     <a href="#" target="_blank">
-      <img src="https://github.com/orafael-almeida/readme-projects-template/blob/main/images/banner.png?raw=true" alt="Project Banner">
+      <img src="https://github.com/user-attachments/assets/829a6b4c-38a2-4710-87f5-00a4adde45b9" alt="Project Banner">
     </a>
   <br />
-
+  <br />
   <div>
     <img src="https://img.shields.io/badge/mysql-4479A1.svg?style=for-the-badge&logo=mysql&logoColor=white" alt="MySQL" />
     <img src="https://img.shields.io/badge/Spring%20Boot-6DB33F.svg?style=for-the-badge&logo=Spring-Boot&logoColor=white" alt="SpringBoot" />
@@ -96,7 +96,7 @@ mvn clean install
 ```bash
 mvn clean spring-boot:run
 #or
-./mvnw clean -DskipTests=true spring-boot:run
+./mvnw clean -Dmaven.test.skip spring-boot:run
 ```
 
 Open [localhost:8080/swagger-ui/index.html](localhost:8080/swagger-ui/index.html) in your browser to view the project to test the api.
@@ -157,6 +157,9 @@ SPRING_PROFILE=CHANGE_LATER_IF_DEPLOY
     * FEAT:
         - Book listing can now be paginated
         - Book listing can now be filtered
+* 0.1.26:
+    * ANALYTICS:
+       - Admin can retrieve dashboard data, such as borrows/returns per period as well as other core data centralized.
 
 ## <a name="contributing">🤝 Contributing</a>
 
