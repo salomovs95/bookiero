@@ -55,4 +55,8 @@ public class AuthController implements UserDetailsService {
 
     return user;
   }
+
+  public Long countUsers() {
+    return this.userRepo.count();
+  }
 }

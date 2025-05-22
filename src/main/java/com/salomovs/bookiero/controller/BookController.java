@@ -88,4 +88,12 @@ public class BookController {
     return this.authorRepo
                .retrieveMostPopularAuthors();
   }
+
+  public Long countBooks() {
+    return this.bookRepo.count();
+  }
+
+  public Long countAuthors() {
+    return this.authorRepo.count();
+  }
 }
