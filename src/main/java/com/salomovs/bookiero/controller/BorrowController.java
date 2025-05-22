@@ -1,6 +1,6 @@
 package com.salomovs.bookiero.controller;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -11,6 +11,8 @@ import com.salomovs.bookiero.model.entity.Book;
 import com.salomovs.bookiero.model.entity.BookBorrow;
 import com.salomovs.bookiero.model.entity.User;
 import com.salomovs.bookiero.model.repository.BookBorrowRepository;
+import com.salomovs.bookiero.view.dto.BorrowAnalyticDTO;
+import com.salomovs.bookiero.view.dto.ReturnsAnalyticDTO;
 
 @Service
 public class BorrowController {
@@ -32,19 +34,27 @@ public class BorrowController {
       }
     });
 
-    BookBorrow newBorrow = this.borrowRepo.save(new BookBorrow(null, LocalDateTime.now(), user, book));
+    BookBorrow newBorrow = this.borrowRepo.save(new BookBorrow(null, LocalDate.now(), user, book));
     return newBorrow.getId();
   }
 
   public void returnBook(Integer borrowId) {
     BookBorrow borrow = this.borrowRepo.findById(borrowId)
       .orElseThrow(()->new BorrowNotFoundException("BORROW NOT FOUND"));
-    borrow.setReturnedAt(LocalDateTime.now());
+    borrow.setReturnedAt(LocalDate.now());
     this.borrowRepo.save(borrow);
   }
 
   public Long countActiveBorrows(Integer bookId) {
     long borrowCount = this.borrowRepo.countActiveBorrows(bookId);
     return borrowCount;
+  }
+
+  public List<BorrowAnalyticDTO> getLastBorrows(String limitDays) {
+    return this.borrowRepo.getLastBorrows(limitDays);
+  }
+
+  public List<ReturnsAnalyticDTO> getLastReturns(String limitDays) {
+    return this.borrowRepo.getLastReturns(limitDays);
   }
 }

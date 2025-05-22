@@ -1,6 +1,6 @@
 package com.salomovs.bookiero.model.entity;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,10 +23,10 @@ public class BookBorrow {
   private Integer id;
 
   @Column(name="borrowed_at", nullable=false)
-  private LocalDateTime borrowedAt;
+  private LocalDate borrowedAt;
 
   @Column(name="returned_at", nullable=true)
-  private LocalDateTime returnedAt;
+  private LocalDate returnedAt;
 
   @ManyToOne @JoinColumn(name="user_id", nullable=false)
   private User whoBorrows;
@@ -34,7 +34,7 @@ public class BookBorrow {
   @ManyToOne @JoinColumn(name="book_id", nullable=false)
   private Book bookToBorrow;
 
-  public BookBorrow(Integer id, LocalDateTime when, User who, Book what) {
+  public BookBorrow(Integer id, LocalDate when, User who, Book what) {
     this.id = id;
     this.borrowedAt = when;
     this.whoBorrows = who;

@@ -43,6 +43,8 @@ public class FilterChain {
       "/api/books/authors"
     };
 
+    String[] adminGetRoutes = { "/api/analytics" };
+
     String[] adminPatchRoutes = { "/api/books/borrows/**" };
 
     http
@@ -54,6 +56,8 @@ public class FilterChain {
       .authorizeHttpRequests(auth -> auth
         .requestMatchers(publicRoutes)
            .permitAll()
+        .requestMatchers(HttpMethod.GET, adminGetRoutes)
+           .hasRole(Roles.USER_ADMIN.toString())
         .requestMatchers(HttpMethod.POST, adminPostRoutes)
            .hasRole(Roles.USER_ADMIN.toString())
         .requestMatchers(HttpMethod.PATCH, adminPatchRoutes)
