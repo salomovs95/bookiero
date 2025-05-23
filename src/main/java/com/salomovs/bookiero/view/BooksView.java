@@ -29,6 +29,7 @@ import com.salomovs.bookiero.model.entity.Author;
 import com.salomovs.bookiero.model.entity.Book;
 import com.salomovs.bookiero.model.entity.User;
 import com.salomovs.bookiero.view.dto.BookData;
+import com.salomovs.bookiero.view.dto.BorrowBookDTO;
 import com.salomovs.bookiero.view.dto.CreateBookDto;
 import com.salomovs.bookiero.view.dto.RegisterAuthorDTO;
 
@@ -48,7 +49,7 @@ public class BooksView {
   }
 
   @ApiOperation(summary="Book Creation Handler", security="jwt")
-  @PostMapping("/")
+  @PostMapping("")
   public ResponseEntity<Map<String, Integer>> registerBook(@RequestBody @Valid CreateBookDto body) {
     Integer bookId = this.bookController.create(body);
 
@@ -73,7 +74,7 @@ public class BooksView {
   }
 
   @ApiOperation(summary="List Books Paginated", security="jwt")
-  @GetMapping("/")
+  @GetMapping("")
   public ResponseEntity<Map<String, Object>> getPaginatedBooks(@RequestParam(name="page") Optional<Integer> page,
                                                                @RequestParam(name="search") Optional<String> search) {
     Integer pageNumber = page.orElse(0);
@@ -109,13 +110,12 @@ public class BooksView {
   }
 
   @ApiOperation(summary="Book Borrowing Handler",security="jwt")
-  @PostMapping("/borrows/{book_id}/{user_id}")
-  public ResponseEntity<Map<String, Integer>> borrowABook(@PathVariable(name="book_id") Integer bookId,
-                                                          @PathVariable(name="user_id") Integer userId) {
+  @PostMapping("/borrows")
+  public ResponseEntity<Map<String, Integer>> borrowABook(@RequestBody BorrowBookDTO body) {
     User user = this.authController
-                    .getUserInfo(userId);
+                    .getUserInfo(body.userId());
     Book book = this.bookController
-                    .findBookById(bookId);    
+                    .findBookById(body.bookId());    
     int newBorrowId = this.borrowController
                           .borrowBook(book, user);
 
