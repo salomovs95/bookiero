@@ -47,11 +47,12 @@ public interface BookBorrowRepository extends JpaRepository<BookBorrow, Integer>
   @Query(
     nativeQuery=true,
     value="""
-      SELECT b.returned_at as returnedAt, COUNT(id) as quantity 
+      SELECT b.returned_at AS returnedAt, 
+      COUNT(b.id) AS quantity 
       FROM borrows b 
-      WHERE NOT b.returned_at = NULL 
-      AND b.returned_at >= CURRENT_TIMESTAMP - INTERVAL :limitDays DAY 
-      GROUP BY b.returned_at
+      WHERE b.returned_at IS NOT NULL 
+      AND b.returned_at >= CURRENT_TIMESTAMP - INTERVAL :limitDays DAY
+      GROUP BY b.id;
     """
   )
   List<ReturnsAnalyticDTO> getLastReturns(@Param("limitDays") String limitDays);
