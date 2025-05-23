@@ -42,7 +42,7 @@ public class AuthView {
     this.jwtService = jwtService;
   }
 
-  @ApiOperation(summary="User Registration Handler", security="")
+  @ApiOperation(summary="User Registration Handler", security="jwt")
   @PostMapping("/signup")
   public ResponseEntity<Map<String, Integer>> handleSignUp(@RequestBody UserSignUpDto body) {
     int newUserId = this.authController.saveUserInfo(body);
