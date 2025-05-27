@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -15,8 +14,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
-
-import com.salomovs.bookiero.enums.Roles;
 
 @Configuration @EnableWebSecurity @Profile("!test")
 public class FilterChain {
@@ -32,15 +29,15 @@ public class FilterChain {
       "/v3/api-docs*/**",
       "/swagger-ui/**",
       "/api/auth/login",
-      "/api/auth/signup",
       "/api/books/ranking",
       "/api/books/authors/ranking"
     };
 
     String[] adminPostRoutes = {
-      "/api/books/",
-      "/api/books/borrows/**",
-      "/api/books/authors"
+      "/api/books",
+      "/api/books/borrows",
+      "/api/books/authors",
+      "/api/auth/signup"
     };
 
     String[] adminGetRoutes = { "/api/analytics" };
@@ -48,7 +45,6 @@ public class FilterChain {
     String[] adminPatchRoutes = { "/api/books/borrows/**" };
 
     http
-      .cors(Customizer.withDefaults())
       .csrf(c -> c.disable())
       .sessionManagement(session -> session
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -57,11 +53,11 @@ public class FilterChain {
         .requestMatchers(publicRoutes)
            .permitAll()
         .requestMatchers(HttpMethod.GET, adminGetRoutes)
-           .hasRole(Roles.USER_ADMIN.toString())
+           .hasAuthority("USER_ADMIN")
         .requestMatchers(HttpMethod.POST, adminPostRoutes)
-           .hasRole(Roles.USER_ADMIN.toString())
+           .hasAuthority("USER_ADMIN")
         .requestMatchers(HttpMethod.PATCH, adminPatchRoutes)
-           .hasRole(Roles.USER_ADMIN.toString())
+           .hasAuthority("USER_ADMIN")
         .anyRequest()
            .authenticated()
       )

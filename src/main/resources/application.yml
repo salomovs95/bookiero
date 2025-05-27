@@ -6,8 +6,14 @@ spring:
       allowed-origins: ${ALLOWED_ORIGINS}
   jpa:
     open-in-view: false
-    hibernate:
-      ddl-auto: update
+    #properties:
+    #  jakarta:
+    #    persistence:
+    #      schema-generation:
+    #        scripts:
+    #          action: create
+    #          create-target: ./create.sql
+    #          create-source: metadata
   profiles:
     active: ${SPRING_PROFILE:develop}
   datasource:
