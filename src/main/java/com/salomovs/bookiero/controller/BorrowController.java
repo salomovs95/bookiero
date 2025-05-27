@@ -3,6 +3,7 @@ package com.salomovs.bookiero.controller;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.salomovs.bookiero.exception.BookBorrowingException;
@@ -50,11 +51,15 @@ public class BorrowController {
     return borrowCount;
   }
 
-  public List<BorrowAnalyticDTO> getLastBorrows(String limitDays) {
+  public List<BorrowAnalyticDTO> getLastBorrows(Integer limitDays) {
+    LoggerFactory.getLogger(this.getClass().getName())
+                 .info("Last Days: " + limitDays);
     return this.borrowRepo.getLastBorrows(limitDays);
   }
 
-  public List<ReturnsAnalyticDTO> getLastReturns(String limitDays) {
+  public List<ReturnsAnalyticDTO> getLastReturns(Integer limitDays) {
+    LoggerFactory.getLogger(this.getClass().getName())
+                 .info("Last Days: " + limitDays);
     return this.borrowRepo.getLastReturns(limitDays);
   }
 }

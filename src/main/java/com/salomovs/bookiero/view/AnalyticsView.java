@@ -33,7 +33,8 @@ public class AnalyticsView {
 
   @ApiOperation(summary="Get Metrics and Analytics", security="jwt")
   @GetMapping("")
-  public ResponseEntity<Map<String, Object>> getAnalytics(@RequestParam(name="limit") Optional<String> limitDays) {
+  public ResponseEntity<Map<String, Object>> getAnalytics(@RequestParam(name="limit") Optional<Integer> limitDays) {
+    Integer limit = limitDays.orElse(7);
     Map<String, Object> map = new HashMap<>();
 
     map.put("users_count", this.authController.countUsers());
@@ -43,7 +44,7 @@ public class AnalyticsView {
     Map<String, Long> lastBorrows = new HashMap<>();
 
     this.borrowController
-        .getLastBorrows(limitDays.orElse("7"))
+        .getLastBorrows(limit)
         .stream()
         .forEach(b->lastBorrows.put(
            b.getBorrowedAt().toString(),
@@ -54,7 +55,7 @@ public class AnalyticsView {
     Map<String, Long> lastReturns = new HashMap<>();
 
     this.borrowController
-        .getLastReturns(limitDays.orElse("7"))
+        .getLastReturns(limit)
         .stream()
         .forEach(r->lastReturns.put(
            r.getReturnedAt().toString(),
