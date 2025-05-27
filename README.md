@@ -6,7 +6,7 @@
   <br />
   <br />
   <div>
-    <img src="https://img.shields.io/badge/mysql-4479A1.svg?style=for-the-badge&logo=mysql&logoColor=white" alt="MySQL" />
+    <img src="https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
     <img src="https://img.shields.io/badge/Spring%20Boot-6DB33F.svg?style=for-the-badge&logo=Spring-Boot&logoColor=white" alt="SpringBoot" />
     <img src="https://img.shields.io/badge/Apache%20Maven-C71A36?style=for-the-badge&logo=Apache%20Maven&logoColor=white" alt="Apache Maven" />
     <img src="https://img.shields.io/badge/JUnit5-25A162.svg?style=for-the-badge&logo=JUnit5&logoColor=white" alt="JUnit 5" />
@@ -52,7 +52,7 @@
 ## <a name="tech-stack">⚙️ Tech Stack</a>
 
 - Java + Spring Boot 3, for handling requests
-- MySQL/PostgreSQL, for data persistence
+- PostgreSQL, for data persistence
 - Spring Security, for handling authentication/authorization
 - Maven, for build/dependency management
 - Springdoc/Swagger, to document the api
@@ -72,7 +72,7 @@ To use this project you must have previously setup the following:
 - [Java JDK 21 or newer](#)
 - [Maven (Optional)](#)
 - [Docker](#)
-- [MySQL if not confident using docker](#)
+- [PoatgreSQL if not confident using docker](#)
 
 **01 - Cloning the Repository**
 
@@ -160,6 +160,9 @@ SPRING_PROFILE=CHANGE_LATER_IF_DEPLOY
 * 0.1.26:
     * ANALYTICS:
        - Admin can retrieve dashboard data, such as borrows/returns per period as well as other core data centralized.
+* 0.1.40:
+    * UPDATE:
+       - Refactors and minor adjustments
 
 ## <a name="contributing">🤝 Contributing</a>
 
